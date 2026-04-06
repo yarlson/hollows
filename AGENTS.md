@@ -151,6 +151,17 @@ The `has_method` pattern is the damage interface — any damageable node just im
 - Don't set `target_position` every frame — update every 0.25s
 - Wait one physics frame after bake before spawning enemies
 
+## Lint and Format
+
+After each implementation phase, run:
+
+```bash
+gdformat scenes/**/*.gd
+gdlint scenes/**/*.gd
+```
+
+Fix all issues before moving on. Code must pass both checks cleanly.
+
 ## Scene/File Hygiene
 
 - `queue_free()` dead enemies and expired projectiles — they leak memory otherwise
