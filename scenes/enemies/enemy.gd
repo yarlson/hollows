@@ -9,9 +9,11 @@ const ATTACK_DAMAGE: int = 5
 const ATTACK_COOLDOWN: float = 1.0
 const DETECTION_RANGE: float = 15.0
 const ATTACK_RANGE: float = 2.0
+const STAGGER_DURATION: float = 0.15
 
 var _health: int = 30
 var _state: State = State.IDLE
+var _stagger_time: float = 0.0
 var _target: Node3D = null
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -33,6 +35,13 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= _gravity * delta
 
+	if _stagger_time > 0.0:
+		_stagger_time -= delta
+		velocity.x = 0.0
+		velocity.z = 0.0
+		move_and_slide()
+		return
+
 	_update_target_state()
 
 	match _state:
@@ -52,6 +61,7 @@ func take_damage(amount: int) -> void:
 	if _state == State.DEAD:
 		return
 	_health -= amount
+	_stagger_time = STAGGER_DURATION
 	_flash_hit()
 	if _health <= 0:
 		_die()
@@ -175,4 +185,10 @@ func _die() -> void:
 	_state = State.DEAD
 	_attack_timer.stop()
 	died.emit()
-	queue_free()
+	collision_layer = 0
+	collision_mask = 0
+	var mat: StandardMaterial3D = _mesh.get_surface_override_material(0)
+	mat.albedo_color = Color.WHITE
+	var tween := create_tween()
+	tween.tween_property(self, "scale", Vector3(0.1, 0.1, 0.1), 0.3)
+	tween.tween_callback(queue_free)

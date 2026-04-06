@@ -2,7 +2,13 @@ extends CanvasLayer
 
 signal restart_requested
 
+const CROSSHAIR_COLOR := Color(0.2, 1.0, 0.2, 0.9)
+
 @onready var _health_bar: ProgressBar = $HealthContainer/HBox/HealthBar
+@onready var _crosshair_top: ColorRect = $Crosshair/Top
+@onready var _crosshair_bottom: ColorRect = $Crosshair/Bottom
+@onready var _crosshair_left: ColorRect = $Crosshair/Left
+@onready var _crosshair_right: ColorRect = $Crosshair/Right
 @onready var _game_over_panel: PanelContainer = $GameOverPanel
 @onready var _restart_button: Button = $GameOverPanel/VBox/RestartButton
 @onready var _victory_panel: PanelContainer = $VictoryPanel
@@ -37,6 +43,20 @@ func show_game_over() -> void:
 
 func show_victory() -> void:
 	_victory_panel.visible = true
+
+
+func flash_hitmarker() -> void:
+	_crosshair_top.color = Color.WHITE
+	_crosshair_bottom.color = Color.WHITE
+	_crosshair_left.color = Color.WHITE
+	_crosshair_right.color = Color.WHITE
+	await get_tree().create_timer(0.08).timeout
+	if not is_instance_valid(self):
+		return
+	_crosshair_top.color = CROSSHAIR_COLOR
+	_crosshair_bottom.color = CROSSHAIR_COLOR
+	_crosshair_left.color = CROSSHAIR_COLOR
+	_crosshair_right.color = CROSSHAIR_COLOR
 
 
 func _on_restart_pressed() -> void:

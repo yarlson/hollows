@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 signal health_changed(new_health: int, max_health: int)
+signal hit_landed
 signal died
 
 const SPEED: float = 7.0
@@ -101,6 +102,7 @@ func _shoot() -> void:
 		var collider := _raycast.get_collider()
 		if collider.has_method(&"take_damage"):
 			collider.take_damage(DAMAGE)
+			hit_landed.emit()
 	_flash_muzzle()
 	_shoot_sfx.play()
 	await get_tree().create_timer(FIRE_RATE).timeout

@@ -49,6 +49,14 @@
 - Direct movement toward player via `move_and_slide()` for obstacle sliding
 - Timer-based attacks (no async coroutines in combat logic)
 - Player found via `get_tree().get_nodes_in_group(&"player")`
+- Hit stagger via float countdown in `_physics_process` — skips movement while `_stagger_time > 0`, no extra Timer needed
+- Death uses `create_tween()` for shrink effect — `died` signal emits immediately (so wave count updates), collision disabled, visual tween plays, then `queue_free()` on tween callback
+
+## Combat Feedback Pattern
+
+- Player emits `hit_landed` signal when hitscan connects with a damageable target; arena.gd wires this to HUD
+- HUD hitmarker: crosshair ColorRects flash white for 0.08s on hit confirmation, then reset to default color
+- Enemy hit flash: material set to white for 0.1s via await, guarded by `is_instance_valid` and state check
 
 ## Physics Rules
 

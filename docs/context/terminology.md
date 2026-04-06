@@ -12,3 +12,6 @@
 - **damage overlay** — brief ColorRect flash over the screen when the player takes damage
 - **wave** — a group of enemies spawned together; clearing all enemies in a wave triggers the next wave after a delay
 - **spawn point** — Marker3D node in the arena defining a position where enemies can be instantiated; shuffled per wave for variety
+- **hitmarker** — brief white flash on the crosshair confirming a shot hit a damageable target
+- **hit stagger** — brief movement pause imposed on enemies when they take damage; float-based cooldown, not a state change
+- **death tween** — scale-to-zero animation on enemy death using `create_tween()`, providing visual feedback before `queue_free()`
