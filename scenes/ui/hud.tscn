@@ -72,6 +72,27 @@ max_value = 100.0
 value = 100.0
 show_percentage = false
 
+[node name="WaveInfo" type="VBoxContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_top = 10.0
+offset_right = 80.0
+offset_bottom = 60.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="WaveLabel" type="Label" parent="WaveInfo"]
+layout_mode = 2
+text = "Wave 1/5"
+horizontal_alignment = 1
+
+[node name="EnemyCountLabel" type="Label" parent="WaveInfo"]
+layout_mode = 2
+text = "Enemies: 3"
+horizontal_alignment = 1
+
 [node name="GameOverPanel" type="PanelContainer" parent="."]
 visible = false
 anchors_preset = 8
@@ -98,3 +119,30 @@ horizontal_alignment = 1
 [node name="RestartButton" type="Button" parent="GameOverPanel/VBox"]
 layout_mode = 2
 text = "Restart"
+
+[node name="VictoryPanel" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -60.0
+offset_right = 120.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="VictoryPanel"]
+layout_mode = 2
+alignment = 1
+
+[node name="VictoryLabel" type="Label" parent="VictoryPanel/VBox"]
+layout_mode = 2
+text = "VICTORY!"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="VictoryPanel/VBox"]
+layout_mode = 2
+text = "Play Again"

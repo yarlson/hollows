@@ -5,7 +5,7 @@ signal died
 enum State { IDLE, CHASE, ATTACK, DEAD }
 
 const CHASE_SPEED: float = 4.0
-const ATTACK_DAMAGE: int = 10
+const ATTACK_DAMAGE: int = 5
 const ATTACK_COOLDOWN: float = 1.0
 const DETECTION_RANGE: float = 15.0
 const ATTACK_RANGE: float = 2.0
