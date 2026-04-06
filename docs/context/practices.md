@@ -21,7 +21,7 @@
 - One script per scene root, named to match the scene
 - Co-locate scene + script in the same directory
 - Scenes organized under `scenes/<entity>/`
-- No autoloads; signal wiring done by the level scene script (arena.gd)
+- No autoloads; signal wiring done by the level scene script (`labyrinth.gd`)
 
 ## Damage and Healing Pattern
 
@@ -36,8 +36,7 @@
 
 - Area3D scene with collision_layer=0, collision_mask=2 (Player only)
 - Uses duck-typed `body.has_method(&"heal")` on `body_entered` — same pattern as damage interface
-- Pickups spawned by arena.gd between waves at random spawn point positions; persist until collected
-- Grouped via `&"pickups"` for potential bulk operations
+- Pickups placed as static scene instances in the level; persist until collected
 - Slow Y-axis rotation in `_process` for visual readability
 - `queue_free()` on collection
 
@@ -63,13 +62,13 @@
 - Attack lunge: velocity impulse toward player on telegraph timeout; ATTACK state uses `move_toward` decay (not instant zero) so lunge produces visible forward motion
 - Player found via `get_tree().get_nodes_in_group(&"player")`
 - Hit stagger via float countdown in `_physics_process` — skips movement while `_stagger_time > 0`, no extra Timer needed
-- Death uses `create_tween()` for shrink effect — `died` signal emits immediately (so wave count updates), collision disabled, visual tween plays, then `queue_free()` on tween callback
+- Death uses `create_tween()` for shrink effect — `died` signal emits immediately (so kill count updates), collision disabled, visual tween plays, then `queue_free()` on tween callback
 - Color management via `_set_color()` helper with `normal_color` export / `TELEGRAPH_COLOR` constant; telegraph timer stopped on state exit to prevent stale color
 - `_health` initialized from `max_health` export in `_ready()`; initial material color set from `normal_color` export
 
 ## Combat Feedback Pattern
 
-- Player emits `hit_landed` signal when hitscan connects with a damageable target; arena.gd wires this to HUD
+- Player emits `hit_landed` signal when hitscan connects with a damageable target; level script wires this to HUD
 - HUD hitmarker: crosshair ColorRects flash white for 0.08s on hit confirmation, then reset to default color
 - Enemy hit flash: material set to white for 0.1s via await, guarded by `is_instance_valid` and state check
 - Damage direction indicators: 4 semi-transparent red edge bars on HUD (top/bottom/left/right), shown based on angle from player forward to damage source; counter-guarded await prevents overlapping hide calls
@@ -85,20 +84,17 @@
 - Never multiply mouse motion by delta
 - Mouse yaw on body node, pitch on head node, pitch clamped +-89 deg
 
-## Wave Spawning
+## Level Management
 
-- Arena script owns all wave state: current wave, enemies alive count, spawn logic
-- Waves defined as an array of composition dictionaries mapping enemy type names to counts
-- Three enemy variant scenes preloaded; a `scene_map` dictionary routes type names to PackedScenes at spawn time
-- Enemies are instantiated at runtime, not placed statically in the scene
-- Spawn positions collected from Marker3D children of a SpawnPoints node, shuffled per wave
-- Enemy `died` signal connected at spawn time to decrement alive count and check wave completion
-- Two-stage one-shot Timer between waves: first timeout (scaling delay: `2.0 + wave * 0.5` seconds) triggers wave announcement on HUD, second timeout (1.5s) spawns enemies; `_wave_announced` bool tracks stage; timer stopped on player death to prevent posthumous spawning
-- Wave announcement: HUD `announce_wave()` shows "WAVE X" label centered on screen, holds 1s, fades alpha over 0.5s via tween, then hides; non-blocking
-- `_game_over` flag set on both player death and victory; prevents duplicate end states and stops elapsed time counter
+- Level script (`labyrinth.gd`) owns game state: `_game_over`, `_kills`, `_elapsed_time`
+- Player added to `&"player"` group in `_ready()` so enemies can find it
+- Player signals (`health_changed`, `hit_landed`, `damage_taken_from`, `died`) wired to HUD in `_ready()`
+- Enemies placed as child instances under an `Enemies` container node; level script iterates children and connects each `died` signal
+- Key pickup `picked_up` signal and exit trigger `body_entered` signal wired to level script for progression
+- Game over on player death; victory on reaching exit with key
+- `_game_over` flag prevents duplicate end states and stops elapsed time counter
 - Victory freezes player by disabling `_unhandled_input` and `_physics_process`, then releases mouse
-- Arena tracks `_kills` and `_elapsed_time`; passes stats to HUD on game over (kills + wave) and victory (kills + time)
-- Game over summary shows "Kills: X | Wave Y/Z"; victory summary shows "Kills: X | Time: M:SS"
+- HUD `restart_requested` signal triggers `change_scene_to_file.call_deferred()`
 
 ## Scene Restart
 

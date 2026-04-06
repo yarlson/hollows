@@ -10,17 +10,18 @@
 - **procedural audio** — sound effects generated at runtime from synthesized waveforms via AudioStreamWAV, eliminating external audio assets
 - **muzzle flash** — brief OmniLight3D pulse on the camera when the player fires, providing visual shooting feedback
 - **damage overlay** — brief ColorRect flash over the screen when the player takes damage
-- **wave** — a group of enemies spawned together; clearing all enemies in a wave triggers the next wave after a delay
-- **spawn point** — Marker3D node in the arena defining a position where enemies can be instantiated; shuffled per wave for variety
 - **hitmarker** — brief white flash on the crosshair confirming a shot hit a damageable target
 - **hit stagger** — brief movement pause imposed on enemies when they take damage; float-based cooldown, not a state change
 - **death tween** — scale-to-zero animation on enemy death using `create_tween()`, providing visual feedback before `queue_free()`
 - **enemy variant** — a `.tscn` scene referencing `enemy.gd` with different `@export` values for speed, health, damage, color, and size; currently: standard (red, balanced), runner (green, fast, fragile), brute (purple, slow, tanky)
-- **wave composition** — a dictionary mapping enemy type names to spawn counts for a single wave; defines which variants appear and in what quantities
 - **attack telegraph** — configurable orange flash on an enemy before it deals melee damage, giving the player time to react; driven by a one-shot TelegraphTimer
 - **attack lunge** — brief forward velocity impulse applied to the enemy when its telegraph completes and damage lands
 - **damage direction indicator** — semi-transparent red bar on a HUD edge showing which direction damage came from relative to the player's facing
-- **health pickup** — green emissive Area3D sphere spawned between waves at spawn points; persists until player walks into it; heals via duck-typed `heal()` method
+- **health pickup** — green emissive Area3D sphere placed in the level; persists until player walks into it; heals via duck-typed `heal()` method
 - **camera kick** — small upward pitch impulse applied to the head node on each shot, with smooth frame-rate-independent recovery; provides shooting impact feel without permanent aim drift
 - **head bob** — sine-based vertical oscillation of the head node while the player moves on the ground; provides grounded movement feel
-- **wave announcement** — large centered "WAVE X" text shown on HUD between waves via tween (hold + fade); provides anticipation and preparation window before enemies spawn
+- **labyrinth** — the interconnected multi-room level layout; rooms connected by corridors with chokepoints and landmarks
+- **placed enemy** — an enemy instance positioned directly in the level scene at a fixed location, as opposed to dynamically spawned
+- **key pickup** — gold rotating Area3D cube that emits `picked_up` signal on player contact; collecting it unlocks the exit door
+- **exit trigger** — Area3D placed behind the locked door; entering it with the key triggers victory
+- **door** — StaticBody3D on the Environment layer blocking the exit corridor; removed via `queue_free()` when the key is collected
