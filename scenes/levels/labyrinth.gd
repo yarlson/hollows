@@ -15,6 +15,18 @@ func _ready() -> void:
 	_player.damage_taken_from.connect(_hud.show_damage_direction)
 	_player.died.connect(_on_player_died)
 	_hud.restart_requested.connect(_on_restart)
+	_wire_enemies()
+
+
+func _wire_enemies() -> void:
+	for child: Node in $Enemies.get_children():
+		if child.has_signal(&"died"):
+			child.connect(&"died", _on_enemy_died)
+
+
+func _on_enemy_died() -> void:
+	_kills += 1
+	_hud.update_kills(_kills)
 
 
 func _process(delta: float) -> void:

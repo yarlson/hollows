@@ -1,8 +1,12 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scenes/levels/labyrinth.gd" id="0_script"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="2_hud"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/enemy.tscn" id="3_enemy"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/enemy_runner.tscn" id="4_runner"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/enemy_brute.tscn" id="5_brute"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/health_pickup.tscn" id="6_health"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 
@@ -356,6 +360,34 @@ use_collision = true
 collision_layer = 1
 collision_mask = 0
 size = Vector3(1, 3, 1)
+
+[node name="Enemies" type="Node3D" parent="."]
+
+[node name="Standard1" parent="Enemies" instance=ExtResource("3_enemy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 15)
+
+[node name="Standard2" parent="Enemies" instance=ExtResource("3_enemy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 12)
+
+[node name="Standard3" parent="Enemies" instance=ExtResource("3_enemy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 15)
+
+[node name="Runner1" parent="Enemies" instance=ExtResource("4_runner")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 12)
+
+[node name="Runner2" parent="Enemies" instance=ExtResource("4_runner")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
+
+[node name="Brute1" parent="Enemies" instance=ExtResource("5_brute")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0)
+
+[node name="Pickups" type="Node3D" parent="."]
+
+[node name="HealthPickup1" parent="Pickups" instance=ExtResource("6_health")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0.5, 14)
+
+[node name="HealthPickup2" parent="Pickups" instance=ExtResource("6_health")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.5, 1)
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 25)

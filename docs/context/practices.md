@@ -89,11 +89,9 @@
 - Level script (`labyrinth.gd`) owns game state: `_game_over`, `_kills`, `_elapsed_time`
 - Player added to `&"player"` group in `_ready()` so enemies can find it
 - Player signals (`health_changed`, `hit_landed`, `damage_taken_from`, `died`) wired to HUD in `_ready()`
-- Enemies placed as child instances under an `Enemies` container node; level script iterates children and connects each `died` signal
-- Key pickup `picked_up` signal and exit trigger `body_entered` signal wired to level script for progression
-- Game over on player death; victory on reaching exit with key
-- `_game_over` flag prevents duplicate end states and stops elapsed time counter
-- Victory freezes player by disabling `_unhandled_input` and `_physics_process`, then releases mouse
+- Enemies placed as child instances under an `Enemies` container node; level script iterates children and connects each `died` signal via `_wire_enemies()`
+- Health pickups placed as child instances under a `Pickups` container node; no signal wiring needed (self-contained via duck-typed `heal()`)
+- Game over on player death; `_game_over` flag prevents duplicate end states and stops elapsed time counter
 - HUD `restart_requested` signal triggers `change_scene_to_file.call_deferred()`
 
 ## Scene Restart
