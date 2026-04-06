@@ -92,6 +92,14 @@ func flash_hitmarker() -> void:
 	_crosshair_right.color = CROSSHAIR_COLOR
 
 
+func flash_key_status() -> void:
+	_key_status.add_theme_color_override(&"font_color", Color(1.0, 0.85, 0.2))
+	await get_tree().create_timer(0.5).timeout
+	if not is_instance_valid(self):
+		return
+	_key_status.remove_theme_color_override(&"font_color")
+
+
 func show_damage_direction(angle: float) -> void:
 	if angle > -PI / 4.0 and angle < PI / 4.0:
 		_damage_top.visible = true
