@@ -18,11 +18,11 @@ Player spawns in arena → wave 1 begins → enemies spawn at randomized Marker3
 ## System State
 
 - Player: movement, mouse-look, jump, rate-limited hitscan shooting with muzzle flash, damage overlay on hit, hit confirmation signal, death
-- Arena: CSG-based 30x30 enclosed space with 3 obstacles, 8 spawn points (Marker3D), sky, directional light
-- Waves: arena.gd manages wave state — spawns enemies dynamically from preloaded scene, tracks alive count via `died` signal, progresses through 5 waves with a one-shot Timer delay between them
+- Arena: CSG-based 30x30 enclosed space with 7 obstacles (including tall pillar, long wall, low cover, raised platform), 8 spawn points (Marker3D), sky, directional light
+- Waves: arena.gd manages wave state — spawns enemies dynamically from preloaded scene, tracks alive count and kills via `died` signal, tracks elapsed time, progresses through 5 waves with a one-shot Timer delay between them
 - Enemies: direct-chase AI (no navmesh), distance-based detection/attack, telegraphed melee with lunge (5 damage), hit stagger, tween death effect, 3D spatial hit sound
 - Target: destroyable StaticBody3D scene (exists but not placed in active arena)
-- HUD: health bar, crosshair with hitmarker flash, damage direction indicators, wave label ("Wave N/5"), enemy count, game over panel, victory panel
+- HUD: health bar, crosshair with hitmarker flash, damage direction indicators, wave label, enemy count, kills counter, game over panel with summary, victory panel with summary
 - Audio: all sounds procedurally generated at runtime via AudioStreamWAV (no audio asset files)
 - Game loop: wave 1 → fight → clear → next wave → ... → victory or death → restart
 
@@ -40,7 +40,8 @@ Player spawns in arena → wave 1 begins → enemies spawn at randomized Marker3
 - Enemy direct-chase with `move_and_slide()` obstacle sliding
 - Damage direction indicators: 4 edge ColorRects on HUD show which direction damage came from, driven by `damage_taken_from` signal with angle calculation
 - Wave-based spawning: arena preloads enemy scene, instantiates at shuffled spawn points per wave
-- Signal-driven HUD (health bar, wave info, enemy count, game over panel, victory panel)
+- Kill counter and elapsed time tracked by arena.gd, displayed on HUD and in end-of-game summaries
+- Signal-driven HUD (health bar, wave info, enemy count, kills, game over summary, victory summary)
 - Victory state: freezes player input, releases mouse, shows victory UI
 - Scene restart via `change_scene_to_file.call_deferred()`
 

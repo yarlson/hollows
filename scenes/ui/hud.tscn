@@ -72,6 +72,19 @@ max_value = 100.0
 value = 100.0
 show_percentage = false
 
+[node name="KillsLabel" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -120.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 30.0
+grow_horizontal = 0
+mouse_filter = 2
+text = "Kills: 0"
+horizontal_alignment = 2
+
 [node name="WaveInfo" type="VBoxContainer" parent="."]
 anchors_preset = 5
 anchor_left = 0.5
@@ -116,6 +129,10 @@ layout_mode = 2
 text = "GAME OVER"
 horizontal_alignment = 1
 
+[node name="SummaryLabel" type="Label" parent="GameOverPanel/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+
 [node name="RestartButton" type="Button" parent="GameOverPanel/VBox"]
 layout_mode = 2
 text = "Restart"
@@ -141,6 +158,10 @@ alignment = 1
 [node name="VictoryLabel" type="Label" parent="VictoryPanel/VBox"]
 layout_mode = 2
 text = "VICTORY!"
+horizontal_alignment = 1
+
+[node name="SummaryLabel" type="Label" parent="VictoryPanel/VBox"]
+layout_mode = 2
 horizontal_alignment = 1
 
 [node name="RestartButton" type="Button" parent="VictoryPanel/VBox"]

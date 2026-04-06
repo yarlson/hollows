@@ -6,6 +6,8 @@ const WAVE_DELAY: float = 2.0
 
 var _current_wave: int = 0
 var _enemies_alive: int = 0
+var _kills: int = 0
+var _elapsed_time: float = 0.0
 var _game_over: bool = false
 var _spawn_positions: Array[Vector3] = []
 
@@ -26,6 +28,11 @@ func _ready() -> void:
 	_player.add_to_group(&"player")
 	_wave_timer.timeout.connect(_on_wave_timer_timeout)
 	_start_wave()
+
+
+func _process(delta: float) -> void:
+	if not _game_over:
+		_elapsed_time += delta
 
 
 func _start_wave() -> void:
@@ -49,13 +56,16 @@ func _spawn_enemies(count: int) -> void:
 
 func _on_enemy_died() -> void:
 	_enemies_alive -= 1
+	_kills += 1
+	_hud.update_kills(_kills)
 	_hud.update_enemy_count(_enemies_alive)
 	if _enemies_alive <= 0 and not _game_over:
 		if _current_wave >= WAVE_COUNTS.size():
+			_game_over = true
 			_player.set_process_unhandled_input(false)
 			_player.set_physics_process(false)
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			_hud.show_victory()
+			_hud.show_victory(_kills, _elapsed_time)
 		else:
 			_wave_timer.start(WAVE_DELAY)
 
@@ -63,7 +73,7 @@ func _on_enemy_died() -> void:
 func _on_player_died() -> void:
 	_game_over = true
 	_wave_timer.stop()
-	_hud.show_game_over()
+	_hud.show_game_over(_kills, _current_wave, WAVE_COUNTS.size())
 
 
 func _on_wave_timer_timeout() -> void:

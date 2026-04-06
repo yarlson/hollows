@@ -17,6 +17,9 @@ var _damage_indicator_count: int = 0
 @onready var _victory_restart: Button = $VictoryPanel/VBox/RestartButton
 @onready var _wave_label: Label = $WaveInfo/WaveLabel
 @onready var _enemy_count_label: Label = $WaveInfo/EnemyCountLabel
+@onready var _kills_label: Label = $KillsLabel
+@onready var _game_over_summary: Label = $GameOverPanel/VBox/SummaryLabel
+@onready var _victory_summary: Label = $VictoryPanel/VBox/SummaryLabel
 @onready var _damage_top: ColorRect = $DamageIndicators/Top
 @onready var _damage_bottom: ColorRect = $DamageIndicators/Bottom
 @onready var _damage_left: ColorRect = $DamageIndicators/Left
@@ -43,11 +46,19 @@ func update_enemy_count(count: int) -> void:
 	_enemy_count_label.text = "Enemies: %d" % count
 
 
-func show_game_over() -> void:
+func update_kills(kills: int) -> void:
+	_kills_label.text = "Kills: %d" % kills
+
+
+func show_game_over(kills: int, wave: int, total_waves: int) -> void:
+	_game_over_summary.text = "Kills: %d  |  Wave %d/%d" % [kills, wave, total_waves]
 	_game_over_panel.visible = true
 
 
-func show_victory() -> void:
+func show_victory(kills: int, time_seconds: float) -> void:
+	var mins := int(time_seconds) / 60
+	var secs := int(time_seconds) % 60
+	_victory_summary.text = "Kills: %d  |  Time: %d:%02d" % [kills, mins, secs]
 	_victory_panel.visible = true
 
 

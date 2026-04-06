@@ -77,8 +77,10 @@
 - Spawn positions collected from Marker3D children of a SpawnPoints node, shuffled per wave
 - Enemy `died` signal connected at spawn time to decrement alive count and check wave completion
 - One-shot Timer for delay between waves; stopped on player death to prevent posthumous spawning
-- `_game_over` flag prevents victory from triggering after player death (guards simultaneous death edge case)
+- `_game_over` flag set on both player death and victory; prevents duplicate end states and stops elapsed time counter
 - Victory freezes player by disabling `_unhandled_input` and `_physics_process`, then releases mouse
+- Arena tracks `_kills` and `_elapsed_time`; passes stats to HUD on game over (kills + wave) and victory (kills + time)
+- Game over summary shows "Kills: X | Wave Y/Z"; victory summary shows "Kills: X | Time: M:SS"
 
 ## Scene Restart
 
