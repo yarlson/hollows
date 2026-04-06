@@ -38,6 +38,7 @@
 - Uses duck-typed `body.has_method(&"heal")` on `body_entered` — same pattern as damage interface
 - Pickups placed as static scene instances in the level; persist until collected
 - Slow Y-axis rotation in `_process` for visual readability
+- Procedural pickup chime reparented to pickup's parent before `queue_free()` so sound outlives the node
 - `queue_free()` on collection
 
 ## Material Duplication
@@ -50,13 +51,17 @@
 - All game sounds are generated at runtime via `AudioStreamWAV` (no imported audio files)
 - Synthesized from sine waves + noise with envelope decay
 - Player uses `AudioStreamPlayer` (non-spatial) for shoot and hurt sounds
-- Enemies use `AudioStreamPlayer3D` for spatially positioned hit sounds
+- Enemies use `AudioStreamPlayer3D` for spatially positioned hit and alert sounds
+- Level script owns progression sounds (key chime, door rumble) and ambient drone
+- Ambient drone uses `AudioStreamWAV.LOOP_FORWARD` with `loop_end` for seamless looping
+- For sounds that must outlive their source node: create AudioStreamPlayer, reparent to persistent parent, connect `finished` to `queue_free`
 
 ## Enemy AI Pattern
 
-- Single `enemy.gd` script shared by all enemy variants; behavior tuned via `@export` vars (speed, health, damage, cooldowns, color, ranges)
+- Single `enemy.gd` script shared by all enemy variants; behavior tuned via `@export` vars (speed, health, damage, cooldowns, color, ranges, LOS memory)
 - Variant scenes (`enemy.tscn`, `enemy_runner.tscn`, `enemy_brute.tscn`) override exports and mesh/collision dimensions
-- Distance-based detection and state transitions (no Area3D, no NavigationAgent3D)
+- Line-of-sight-gated detection: `PhysicsDirectSpaceState3D.intersect_ray()` from enemy eye height to player eye height against Environment layer (1); IDLE→CHASE requires both distance < `detection_range` AND unobstructed LOS
+- LOS memory: CHASE state tracks `_time_since_last_seen` — resets when enemy sees player, increments each physics frame when LOS is blocked; returns to IDLE after `los_memory_duration` (default 3.0s, configurable per variant via export)
 - Direct movement toward player via `move_and_slide()` for obstacle sliding
 - Timer-based attacks with telegraph: one-shot TelegraphTimer fires before damage (duration configurable per variant), enemy flashes orange during wind-up
 - Attack lunge: velocity impulse toward player on telegraph timeout; ATTACK state uses `move_toward` decay (not instant zero) so lunge produces visible forward motion
@@ -65,6 +70,7 @@
 - Death uses `create_tween()` for shrink effect — `died` signal emits immediately (so kill count updates), collision disabled, visual tween plays, then `queue_free()` on tween callback
 - Color management via `_set_color()` helper with `normal_color` export / `TELEGRAPH_COLOR` constant; telegraph timer stopped on state exit to prevent stale color
 - `_health` initialized from `max_health` export in `_ready()`; initial material color set from `normal_color` export
+- 3D spatial alert sound plays on IDLE→CHASE transition for audio feedback of enemy detection
 
 ## Combat Feedback Pattern
 
@@ -91,7 +97,7 @@
 - Player signals (`health_changed`, `hit_landed`, `damage_taken_from`, `died`) wired to HUD in `_ready()`
 - Enemies placed as child instances under an `Enemies` container node; level script iterates children and connects each `died` signal via `_wire_enemies()`
 - Health pickups placed as child instances under a `Pickups` container node; no signal wiring needed (self-contained via duck-typed `heal()`)
-- Key pickup `picked_up` signal connected to level script; sets `_has_key`, updates HUD key status, removes door via `queue_free()`
+- Key pickup `picked_up` signal connected to level script; sets `_has_key`, flashes HUD key status gold, plays key chime, disables door collision, tweens door upward with rumble sound, then `queue_free()` door on tween completion
 - Exit trigger `body_entered` signal connected to level script; checks player group + `_has_key` + not `_game_over` before triggering victory
 - Game over on player death; victory on reaching exit with key; `_game_over` flag prevents duplicate end states and stops elapsed time counter
 - Victory freezes player by disabling `_unhandled_input` and `_physics_process`, then releases mouse

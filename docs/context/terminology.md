@@ -6,6 +6,11 @@
 - **CSG** — Constructive Solid Geometry; used for rapid level prototyping with built-in collision
 - **screen_relative** — DPI/resolution-independent mouse motion property (Godot 4.3+)
 - **direct chase** — enemy movement toward player using flat distance + `move_and_slide()` without navmesh pathfinding
+- **line-of-sight (LOS)** — physics raycast from enemy to player against Environment layer; gates IDLE→CHASE transition so enemies cannot detect through walls
+- **LOS memory** — duration an enemy continues chasing after losing line of sight; configurable per variant via `los_memory_duration` export; prevents enemies from instantly forgetting the player around corners
+- **zone material** — StandardMaterial3D with distinct albedo color assigned to level geometry by area (spawn, south halls, combat rooms, north, key room, exit) for visual readability and spatial orientation
+- **alert sound** — 3D spatial procedural growl played by an enemy when it first spots the player (IDLE→CHASE); provides audio feedback of enemy detection
+- **ambient drone** — looping low-frequency procedural tone played by the level script for atmospheric presence
 - **canvas_items stretch** — Godot display mode that scales 2D/UI from a design resolution to actual window size
 - **procedural audio** — sound effects generated at runtime from synthesized waveforms via AudioStreamWAV, eliminating external audio assets
 - **muzzle flash** — brief OmniLight3D pulse on the camera when the player fires, providing visual shooting feedback
@@ -23,5 +28,5 @@
 - **labyrinth** — the interconnected multi-room level layout; rooms connected by corridors with chokepoints and landmarks
 - **placed enemy** — an enemy instance positioned directly in the level scene at a fixed location, as opposed to dynamically spawned
 - **key pickup** — gold emissive rotating Area3D cube that emits `picked_up` signal on player contact; collecting it unlocks the exit door
-- **door** — StaticBody3D on the Environment layer blocking the exit corridor; removed via `queue_free()` when the key is collected
+- **door** — StaticBody3D on the Environment layer blocking the exit corridor; collision disabled on key collection, then tweened upward with rumble sound before `queue_free()`
 - **exit trigger** — Area3D placed behind the locked door; entering it with the key triggers victory
