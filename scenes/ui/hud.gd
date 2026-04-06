@@ -3,8 +3,14 @@ extends CanvasLayer
 signal restart_requested
 
 const CROSSHAIR_COLOR := Color(0.2, 1.0, 0.2, 0.9)
+const HEALTH_COLOR_HIGH := Color(0.2, 0.8, 0.2)
+const HEALTH_COLOR_MID := Color(0.9, 0.8, 0.1)
+const HEALTH_COLOR_LOW := Color(0.9, 0.1, 0.1)
+const HEALTH_THRESHOLD_MID: float = 0.5
+const HEALTH_THRESHOLD_LOW: float = 0.25
 
 var _damage_indicator_count: int = 0
+var _health_fill_style: StyleBoxFlat = null
 
 @onready var _health_bar: ProgressBar = $HealthContainer/HBox/HealthBar
 @onready var _crosshair_top: ColorRect = $Crosshair/Top
@@ -31,11 +37,22 @@ func _ready() -> void:
 	_victory_restart.pressed.connect(_on_restart_pressed)
 	_game_over_panel.visible = false
 	_victory_panel.visible = false
+	_health_fill_style = StyleBoxFlat.new()
+	_health_fill_style.bg_color = HEALTH_COLOR_HIGH
+	_health_bar.add_theme_stylebox_override(&"fill", _health_fill_style)
 
 
 func update_health(new_health: int, max_health: int) -> void:
 	_health_bar.max_value = max_health
 	_health_bar.value = new_health
+	if _health_fill_style:
+		var ratio := float(new_health) / float(max_health) if max_health > 0 else 0.0
+		if ratio <= HEALTH_THRESHOLD_LOW:
+			_health_fill_style.bg_color = HEALTH_COLOR_LOW
+		elif ratio <= HEALTH_THRESHOLD_MID:
+			_health_fill_style.bg_color = HEALTH_COLOR_MID
+		else:
+			_health_fill_style.bg_color = HEALTH_COLOR_HIGH
 
 
 func update_wave_info(wave: int, total_waves: int) -> void:

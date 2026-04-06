@@ -10,6 +10,7 @@ const WAVES: Array[Dictionary] = [
 	{&"standard": 2, &"runner": 2, &"brute": 2},
 	{&"standard": 2, &"runner": 3, &"brute": 3},
 ]
+const HEALTH_PICKUP: PackedScene = preload("res://scenes/pickups/health_pickup.tscn")
 const WAVE_DELAY: float = 2.0
 
 var _current_wave: int = 0
@@ -75,6 +76,17 @@ func _spawn_enemies(wave_def: Dictionary) -> void:
 		enemy.connect(&"died", _on_enemy_died)
 
 
+func _spawn_pickups() -> void:
+	var positions := _spawn_positions.duplicate()
+	positions.shuffle()
+	var count: int = 1 if _current_wave <= 2 else 2
+	for i in count:
+		var pickup := HEALTH_PICKUP.instantiate()
+		add_child(pickup)
+		pickup.global_position = positions[i] + Vector3(0.0, 0.5, 0.0)
+		pickup.add_to_group(&"pickups")
+
+
 func _on_enemy_died() -> void:
 	_enemies_alive -= 1
 	_kills += 1
@@ -88,6 +100,7 @@ func _on_enemy_died() -> void:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			_hud.show_victory(_kills, _elapsed_time)
 		else:
+			_spawn_pickups()
 			_wave_timer.start(WAVE_DELAY)
 
 

@@ -20,3 +20,4 @@
 - **attack telegraph** — configurable orange flash on an enemy before it deals melee damage, giving the player time to react; driven by a one-shot TelegraphTimer
 - **attack lunge** — brief forward velocity impulse applied to the enemy when its telegraph completes and damage lands
 - **damage direction indicator** — semi-transparent red bar on a HUD edge showing which direction damage came from relative to the player's facing
+- **health pickup** — green emissive Area3D sphere spawned between waves at spawn points; persists until player walks into it; heals via duck-typed `heal()` method

@@ -23,14 +23,23 @@
 - Scenes organized under `scenes/<entity>/`
 - No autoloads; signal wiring done by the level scene script (arena.gd)
 
-## Damage Pattern
+## Damage and Healing Pattern
 
 - `take_damage(amount: int, source_position := Vector3.INF) -> void` on the player; other damageable nodes use `take_damage(amount: int)`
-- Checked via `has_method(&"take_damage")` duck typing — optional second parameter does not break duck typing
-- No shared base class or interface required
+- `heal(amount: int) -> void` on the player; clamps to `_max_health`, emits `health_changed`
+- Both damage and healing checked via `has_method()` duck typing — no shared base class required
 - Dead target detected by checking `collision_layer == 0`
 - Player sets `collision_layer = 0` and disables physics/input processing on death
 - When `source_position` is finite, player calculates angle from its forward direction to the source and emits `damage_taken_from(angle)` for HUD direction indicators
+
+## Health Pickup Pattern
+
+- Area3D scene with collision_layer=0, collision_mask=2 (Player only)
+- Uses duck-typed `body.has_method(&"heal")` on `body_entered` — same pattern as damage interface
+- Pickups spawned by arena.gd between waves at random spawn point positions; persist until collected
+- Grouped via `&"pickups"` for potential bulk operations
+- Slow Y-axis rotation in `_process` for visual readability
+- `queue_free()` on collection
 
 ## Material Duplication
 
@@ -64,6 +73,7 @@
 - HUD hitmarker: crosshair ColorRects flash white for 0.08s on hit confirmation, then reset to default color
 - Enemy hit flash: material set to white for 0.1s via await, guarded by `is_instance_valid` and state check
 - Damage direction indicators: 4 semi-transparent red edge bars on HUD (top/bottom/left/right), shown based on angle from player forward to damage source; counter-guarded await prevents overlapping hide calls
+- Health bar color: StyleBoxFlat fill override on ProgressBar, color set in `update_health()` — green (>50%), yellow (25-50%), red (<=25%)
 
 ## Physics Rules
 

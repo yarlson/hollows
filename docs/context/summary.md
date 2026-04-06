@@ -13,16 +13,17 @@ First-person shooter prototype built in Godot 4.6 with GDScript. A wave-based ar
 
 ## Core Flow
 
-Player spawns in arena → wave 1 begins → enemies of varying types spawn at randomized Marker3D positions → player moves with WASD + mouse-look → shoots hitscan weapon → enemies chase and melee attack → killing all enemies in a wave triggers a 2s delay then the next wave → 5 waves with mixed compositions (standard → runners introduced wave 2 → brutes introduced wave 4) → clearing all waves triggers victory → death at any point triggers game over → restart loads fresh scene via `change_scene_to_file`.
+Player spawns in arena → wave 1 begins → enemies of varying types spawn at randomized Marker3D positions → player moves with WASD + mouse-look → shoots hitscan weapon → enemies chase and melee attack → killing all enemies in a wave spawns health pickups and triggers a 2s delay then the next wave → pickups persist until collected → 5 waves with mixed compositions (standard → runners introduced wave 2 → brutes introduced wave 4) → clearing all waves triggers victory → death at any point triggers game over → restart loads fresh scene via `change_scene_to_file`.
 
 ## System State
 
-- Player: movement, mouse-look, jump, rate-limited hitscan shooting with muzzle flash, damage overlay on hit, hit confirmation signal, death
+- Player: movement, mouse-look, jump, rate-limited hitscan shooting with muzzle flash, damage overlay on hit, hit confirmation signal, healing via pickups, death
 - Arena: CSG-based 30x30 enclosed space with 7 obstacles (including tall pillar, long wall, low cover, raised platform), 8 spawn points (Marker3D), sky, directional light
 - Waves: arena.gd manages wave state — spawns enemies from three preloaded variant scenes with per-wave composition dictionaries, tracks alive count and kills via `died` signal, tracks elapsed time, progresses through 5 waves with a one-shot Timer delay between them
 - Enemy variants: three types sharing one script (`enemy.gd`) with `@export` configuration — standard (red, balanced), runner (green, small, fast, fragile), brute (purple, large, slow, tanky, high damage); all use direct-chase AI (no navmesh), distance-based detection/attack, telegraphed melee with lunge, hit stagger, tween death effect, 3D spatial hit sound
 - Target: destroyable StaticBody3D scene (exists but not placed in active arena)
-- HUD: health bar, crosshair with hitmarker flash, damage direction indicators, wave label, enemy count, kills counter, game over panel with summary, victory panel with summary
+- HUD: color-coded health bar (green/yellow/red by HP percentage), crosshair with hitmarker flash, damage direction indicators, wave label, enemy count, kills counter, game over panel with summary, victory panel with summary
+- Health pickups: green emissive spheres spawned at random spawn points between waves (1 after early waves, 2 after later waves); persist until collected; Area3D with duck-typed `heal()` on player contact
 - Audio: all sounds procedurally generated at runtime via AudioStreamWAV (no audio asset files)
 - Game loop: wave 1 → fight → clear → next wave → ... → victory or death → restart
 

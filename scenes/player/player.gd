@@ -96,6 +96,11 @@ func take_damage(amount: int, source_position := Vector3.INF) -> void:
 		_die()
 
 
+func heal(amount: int) -> void:
+	_health = mini(_health + amount, _max_health)
+	health_changed.emit(_health, _max_health)
+
+
 func _shoot() -> void:
 	if not _can_shoot:
 		return
