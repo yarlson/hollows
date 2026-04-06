@@ -46,14 +46,17 @@
 
 ## Enemy AI Pattern
 
+- Single `enemy.gd` script shared by all enemy variants; behavior tuned via `@export` vars (speed, health, damage, cooldowns, color, ranges)
+- Variant scenes (`enemy.tscn`, `enemy_runner.tscn`, `enemy_brute.tscn`) override exports and mesh/collision dimensions
 - Distance-based detection and state transitions (no Area3D, no NavigationAgent3D)
 - Direct movement toward player via `move_and_slide()` for obstacle sliding
-- Timer-based attacks with telegraph: one-shot TelegraphTimer fires 0.3s before damage, enemy flashes orange during wind-up
+- Timer-based attacks with telegraph: one-shot TelegraphTimer fires before damage (duration configurable per variant), enemy flashes orange during wind-up
 - Attack lunge: velocity impulse toward player on telegraph timeout; ATTACK state uses `move_toward` decay (not instant zero) so lunge produces visible forward motion
 - Player found via `get_tree().get_nodes_in_group(&"player")`
 - Hit stagger via float countdown in `_physics_process` — skips movement while `_stagger_time > 0`, no extra Timer needed
 - Death uses `create_tween()` for shrink effect — `died` signal emits immediately (so wave count updates), collision disabled, visual tween plays, then `queue_free()` on tween callback
-- Color management via `_set_color()` helper with `NORMAL_COLOR` / `TELEGRAPH_COLOR` constants; telegraph timer stopped on state exit to prevent stale color
+- Color management via `_set_color()` helper with `normal_color` export / `TELEGRAPH_COLOR` constant; telegraph timer stopped on state exit to prevent stale color
+- `_health` initialized from `max_health` export in `_ready()`; initial material color set from `normal_color` export
 
 ## Combat Feedback Pattern
 
@@ -73,7 +76,9 @@
 ## Wave Spawning
 
 - Arena script owns all wave state: current wave, enemies alive count, spawn logic
-- Enemies are instantiated at runtime from a preloaded PackedScene, not placed statically in the scene
+- Waves defined as an array of composition dictionaries mapping enemy type names to counts
+- Three enemy variant scenes preloaded; a `scene_map` dictionary routes type names to PackedScenes at spawn time
+- Enemies are instantiated at runtime, not placed statically in the scene
 - Spawn positions collected from Marker3D children of a SpawnPoints node, shuffled per wave
 - Enemy `died` signal connected at spawn time to decrement alive count and check wave completion
 - One-shot Timer for delay between waves; stopped on player death to prevent posthumous spawning
