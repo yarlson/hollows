@@ -29,9 +29,9 @@ Player spawns in arena → wave 1 begins → enemies of varying types spawn at r
 
 ## Capabilities
 
-- CharacterBody3D player with lerp-based acceleration/friction
+- CharacterBody3D player with lerp-based acceleration/friction and sine-based head bob while moving
 - Mouse-look using `screen_relative` (Godot 4.3+), yaw/pitch separated, pitch clamped +-89 deg
-- RayCast3D hitscan shooting with duck-typed damage, fire rate cooldown, OmniLight3D muzzle flash
+- RayCast3D hitscan shooting with duck-typed damage, fire rate cooldown, OmniLight3D muzzle flash, camera kick recoil with smooth recovery
 - Damage overlay (ColorRect flash) on player hit
 - Crosshair hitmarker: flashes white on confirmed hit via `hit_landed` signal
 - Procedural audio generation: shoot/hurt sounds on player, 3D spatial hit sound on enemies

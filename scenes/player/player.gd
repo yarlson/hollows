@@ -20,6 +20,9 @@ var _max_health: int = 100
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var _mouse_captured: bool = true
 var _can_shoot: bool = true
+var _recoil_recovery: float = 0.0
+var _bob_time: float = 0.0
+var _head_base_y: float = 0.0
 
 @onready var _head: Node3D = $Head
 @onready var _raycast: RayCast3D = $Head/Camera3D/RayCast3D
@@ -31,6 +34,7 @@ var _can_shoot: bool = true
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_head_base_y = $Head.position.y
 	_raycast.enabled = true
 	_shoot_sfx.stream = _make_noise(0.06, 4000.0, 0.4)
 	_hurt_sfx.stream = _make_noise(0.12, 800.0, 0.5)
@@ -83,6 +87,19 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
+	if _recoil_recovery > 0.0:
+		var recovery := minf(_recoil_recovery, deg_to_rad(15.0) * delta)
+		_head.rotation.x -= recovery
+		_recoil_recovery -= recovery
+		_head.rotation.x = clampf(_head.rotation.x, deg_to_rad(-89.0), deg_to_rad(89.0))
+
+	if is_on_floor() and velocity.length() > 0.5:
+		_bob_time += delta * 12.0
+		_head.position.y = _head_base_y + sin(_bob_time) * 0.03
+	else:
+		_bob_time = 0.0
+		_head.position.y = lerpf(_head.position.y, _head_base_y, 10.0 * delta)
+
 
 func take_damage(amount: int, source_position := Vector3.INF) -> void:
 	if _health <= 0:
@@ -113,6 +130,8 @@ func _shoot() -> void:
 			hit_landed.emit()
 	_flash_muzzle()
 	_shoot_sfx.play()
+	_head.rotation.x += deg_to_rad(1.5)
+	_recoil_recovery = deg_to_rad(1.5)
 	await get_tree().create_timer(FIRE_RATE).timeout
 	_can_shoot = true
 

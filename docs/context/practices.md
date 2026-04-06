@@ -74,6 +74,8 @@
 - Enemy hit flash: material set to white for 0.1s via await, guarded by `is_instance_valid` and state check
 - Damage direction indicators: 4 semi-transparent red edge bars on HUD (top/bottom/left/right), shown based on angle from player forward to damage source; counter-guarded await prevents overlapping hide calls
 - Health bar color: StyleBoxFlat fill override on ProgressBar, color set in `update_health()` — green (>50%), yellow (25-50%), red (<=25%)
+- Camera kick: each shot applies a small upward pitch impulse to the head node; smooth recovery in `_physics_process` at a fixed angular rate, clamped to pitch limits; fully recovers so aim is never permanently offset
+- Head bob: sine-based vertical oscillation on head node `position.y` while moving on floor; resets smoothly when stationary or airborne; base Y cached from scene transform in `_ready()`
 
 ## Physics Rules
 
