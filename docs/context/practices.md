@@ -93,7 +93,8 @@
 - Enemies are instantiated at runtime, not placed statically in the scene
 - Spawn positions collected from Marker3D children of a SpawnPoints node, shuffled per wave
 - Enemy `died` signal connected at spawn time to decrement alive count and check wave completion
-- One-shot Timer for delay between waves; stopped on player death to prevent posthumous spawning
+- Two-stage one-shot Timer between waves: first timeout (scaling delay: `2.0 + wave * 0.5` seconds) triggers wave announcement on HUD, second timeout (1.5s) spawns enemies; `_wave_announced` bool tracks stage; timer stopped on player death to prevent posthumous spawning
+- Wave announcement: HUD `announce_wave()` shows "WAVE X" label centered on screen, holds 1s, fades alpha over 0.5s via tween, then hides; non-blocking
 - `_game_over` flag set on both player death and victory; prevents duplicate end states and stops elapsed time counter
 - Victory freezes player by disabling `_unhandled_input` and `_physics_process`, then releases mouse
 - Arena tracks `_kills` and `_elapsed_time`; passes stats to HUD on game over (kills + wave) and victory (kills + time)

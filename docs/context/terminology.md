@@ -23,3 +23,4 @@
 - **health pickup** — green emissive Area3D sphere spawned between waves at spawn points; persists until player walks into it; heals via duck-typed `heal()` method
 - **camera kick** — small upward pitch impulse applied to the head node on each shot, with smooth frame-rate-independent recovery; provides shooting impact feel without permanent aim drift
 - **head bob** — sine-based vertical oscillation of the head node while the player moves on the ground; provides grounded movement feel
+- **wave announcement** — large centered "WAVE X" text shown on HUD between waves via tween (hold + fade); provides anticipation and preparation window before enemies spawn

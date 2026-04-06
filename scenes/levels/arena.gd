@@ -11,13 +11,14 @@ const WAVES: Array[Dictionary] = [
 	{&"standard": 2, &"runner": 3, &"brute": 3},
 ]
 const HEALTH_PICKUP: PackedScene = preload("res://scenes/pickups/health_pickup.tscn")
-const WAVE_DELAY: float = 2.0
+const ANNOUNCE_DELAY: float = 1.5
 
 var _current_wave: int = 0
 var _enemies_alive: int = 0
 var _kills: int = 0
 var _elapsed_time: float = 0.0
 var _game_over: bool = false
+var _wave_announced: bool = false
 var _spawn_positions: Array[Vector3] = []
 
 @onready var _player: CharacterBody3D = $Player
@@ -101,7 +102,7 @@ func _on_enemy_died() -> void:
 			_hud.show_victory(_kills, _elapsed_time)
 		else:
 			_spawn_pickups()
-			_wave_timer.start(WAVE_DELAY)
+			_wave_timer.start(_get_wave_delay())
 
 
 func _on_player_died() -> void:
@@ -110,8 +111,18 @@ func _on_player_died() -> void:
 	_hud.show_game_over(_kills, _current_wave, WAVES.size())
 
 
+func _get_wave_delay() -> float:
+	return 2.0 + _current_wave * 0.5
+
+
 func _on_wave_timer_timeout() -> void:
-	_start_wave()
+	if not _wave_announced:
+		_wave_announced = true
+		_hud.announce_wave(_current_wave + 1)
+		_wave_timer.start(ANNOUNCE_DELAY)
+	else:
+		_wave_announced = false
+		_start_wave()
 
 
 func _on_restart() -> void:

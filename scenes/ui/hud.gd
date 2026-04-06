@@ -26,6 +26,7 @@ var _health_fill_style: StyleBoxFlat = null
 @onready var _kills_label: Label = $KillsLabel
 @onready var _game_over_summary: Label = $GameOverPanel/VBox/SummaryLabel
 @onready var _victory_summary: Label = $VictoryPanel/VBox/SummaryLabel
+@onready var _wave_announcement: Label = $WaveAnnouncement
 @onready var _damage_top: ColorRect = $DamageIndicators/Top
 @onready var _damage_bottom: ColorRect = $DamageIndicators/Bottom
 @onready var _damage_left: ColorRect = $DamageIndicators/Left
@@ -65,6 +66,16 @@ func update_enemy_count(count: int) -> void:
 
 func update_kills(kills: int) -> void:
 	_kills_label.text = "Kills: %d" % kills
+
+
+func announce_wave(wave: int) -> void:
+	_wave_announcement.text = "WAVE %d" % wave
+	_wave_announcement.modulate = Color.WHITE
+	_wave_announcement.visible = true
+	var tween := create_tween()
+	tween.tween_interval(1.0)
+	tween.tween_property(_wave_announcement, "modulate:a", 0.0, 0.5)
+	tween.tween_callback(func() -> void: _wave_announcement.visible = false)
 
 
 func show_game_over(kills: int, wave: int, total_waves: int) -> void:
