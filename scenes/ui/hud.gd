@@ -4,6 +4,8 @@ signal restart_requested
 
 const CROSSHAIR_COLOR := Color(0.2, 1.0, 0.2, 0.9)
 
+var _damage_indicator_count: int = 0
+
 @onready var _health_bar: ProgressBar = $HealthContainer/HBox/HealthBar
 @onready var _crosshair_top: ColorRect = $Crosshair/Top
 @onready var _crosshair_bottom: ColorRect = $Crosshair/Bottom
@@ -15,6 +17,10 @@ const CROSSHAIR_COLOR := Color(0.2, 1.0, 0.2, 0.9)
 @onready var _victory_restart: Button = $VictoryPanel/VBox/RestartButton
 @onready var _wave_label: Label = $WaveInfo/WaveLabel
 @onready var _enemy_count_label: Label = $WaveInfo/EnemyCountLabel
+@onready var _damage_top: ColorRect = $DamageIndicators/Top
+@onready var _damage_bottom: ColorRect = $DamageIndicators/Bottom
+@onready var _damage_left: ColorRect = $DamageIndicators/Left
+@onready var _damage_right: ColorRect = $DamageIndicators/Right
 
 
 func _ready() -> void:
@@ -57,6 +63,27 @@ func flash_hitmarker() -> void:
 	_crosshair_bottom.color = CROSSHAIR_COLOR
 	_crosshair_left.color = CROSSHAIR_COLOR
 	_crosshair_right.color = CROSSHAIR_COLOR
+
+
+func show_damage_direction(angle: float) -> void:
+	if angle > -PI / 4.0 and angle < PI / 4.0:
+		_damage_top.visible = true
+	elif angle >= PI / 4.0 and angle < 3.0 * PI / 4.0:
+		_damage_right.visible = true
+	elif angle <= -PI / 4.0 and angle > -3.0 * PI / 4.0:
+		_damage_left.visible = true
+	else:
+		_damage_bottom.visible = true
+	_damage_indicator_count += 1
+	var my_count := _damage_indicator_count
+	await get_tree().create_timer(0.5).timeout
+	if not is_instance_valid(self):
+		return
+	if _damage_indicator_count == my_count:
+		_damage_top.visible = false
+		_damage_bottom.visible = false
+		_damage_left.visible = false
+		_damage_right.visible = false
 
 
 func _on_restart_pressed() -> void:

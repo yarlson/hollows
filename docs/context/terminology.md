@@ -15,3 +15,6 @@
 - **hitmarker** — brief white flash on the crosshair confirming a shot hit a damageable target
 - **hit stagger** — brief movement pause imposed on enemies when they take damage; float-based cooldown, not a state change
 - **death tween** — scale-to-zero animation on enemy death using `create_tween()`, providing visual feedback before `queue_free()`
+- **attack telegraph** — 0.3s orange flash on an enemy before it deals melee damage, giving the player time to react; driven by a one-shot TelegraphTimer
+- **attack lunge** — brief forward velocity impulse applied to the enemy when its telegraph completes and damage lands
+- **damage direction indicator** — semi-transparent red bar on a HUD edge showing which direction damage came from relative to the player's facing

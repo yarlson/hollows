@@ -25,11 +25,12 @@
 
 ## Damage Pattern
 
-- `take_damage(amount: int) -> void` method on any damageable node
-- Checked via `has_method(&"take_damage")` duck typing
+- `take_damage(amount: int, source_position := Vector3.INF) -> void` on the player; other damageable nodes use `take_damage(amount: int)`
+- Checked via `has_method(&"take_damage")` duck typing — optional second parameter does not break duck typing
 - No shared base class or interface required
 - Dead target detected by checking `collision_layer == 0`
 - Player sets `collision_layer = 0` and disables physics/input processing on death
+- When `source_position` is finite, player calculates angle from its forward direction to the source and emits `damage_taken_from(angle)` for HUD direction indicators
 
 ## Material Duplication
 
@@ -47,16 +48,19 @@
 
 - Distance-based detection and state transitions (no Area3D, no NavigationAgent3D)
 - Direct movement toward player via `move_and_slide()` for obstacle sliding
-- Timer-based attacks (no async coroutines in combat logic)
+- Timer-based attacks with telegraph: one-shot TelegraphTimer fires 0.3s before damage, enemy flashes orange during wind-up
+- Attack lunge: velocity impulse toward player on telegraph timeout; ATTACK state uses `move_toward` decay (not instant zero) so lunge produces visible forward motion
 - Player found via `get_tree().get_nodes_in_group(&"player")`
 - Hit stagger via float countdown in `_physics_process` — skips movement while `_stagger_time > 0`, no extra Timer needed
 - Death uses `create_tween()` for shrink effect — `died` signal emits immediately (so wave count updates), collision disabled, visual tween plays, then `queue_free()` on tween callback
+- Color management via `_set_color()` helper with `NORMAL_COLOR` / `TELEGRAPH_COLOR` constants; telegraph timer stopped on state exit to prevent stale color
 
 ## Combat Feedback Pattern
 
 - Player emits `hit_landed` signal when hitscan connects with a damageable target; arena.gd wires this to HUD
 - HUD hitmarker: crosshair ColorRects flash white for 0.08s on hit confirmation, then reset to default color
 - Enemy hit flash: material set to white for 0.1s via await, guarded by `is_instance_valid` and state check
+- Damage direction indicators: 4 semi-transparent red edge bars on HUD (top/bottom/left/right), shown based on angle from player forward to damage source; counter-guarded await prevents overlapping hide calls
 
 ## Physics Rules
 

@@ -20,6 +20,7 @@ func _ready() -> void:
 		_spawn_positions.append(sp.global_position)
 	_player.health_changed.connect(_hud.update_health)
 	_player.hit_landed.connect(_hud.flash_hitmarker)
+	_player.damage_taken_from.connect(_hud.show_damage_direction)
 	_player.died.connect(_on_player_died)
 	_hud.restart_requested.connect(_on_restart)
 	_player.add_to_group(&"player")

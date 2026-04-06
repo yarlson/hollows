@@ -20,9 +20,9 @@ Player spawns in arena → wave 1 begins → enemies spawn at randomized Marker3
 - Player: movement, mouse-look, jump, rate-limited hitscan shooting with muzzle flash, damage overlay on hit, hit confirmation signal, death
 - Arena: CSG-based 30x30 enclosed space with 3 obstacles, 8 spawn points (Marker3D), sky, directional light
 - Waves: arena.gd manages wave state — spawns enemies dynamically from preloaded scene, tracks alive count via `died` signal, progresses through 5 waves with a one-shot Timer delay between them
-- Enemies: direct-chase AI (no navmesh), distance-based detection/attack, timer-based melee (5 damage), hit stagger, tween death effect, 3D spatial hit sound
+- Enemies: direct-chase AI (no navmesh), distance-based detection/attack, telegraphed melee with lunge (5 damage), hit stagger, tween death effect, 3D spatial hit sound
 - Target: destroyable StaticBody3D scene (exists but not placed in active arena)
-- HUD: health bar, crosshair with hitmarker flash, wave label ("Wave N/5"), enemy count, game over panel, victory panel
+- HUD: health bar, crosshair with hitmarker flash, damage direction indicators, wave label ("Wave N/5"), enemy count, game over panel, victory panel
 - Audio: all sounds procedurally generated at runtime via AudioStreamWAV (no audio asset files)
 - Game loop: wave 1 → fight → clear → next wave → ... → victory or death → restart
 
@@ -34,9 +34,11 @@ Player spawns in arena → wave 1 begins → enemies spawn at randomized Marker3
 - Damage overlay (ColorRect flash) on player hit
 - Crosshair hitmarker: flashes white on confirmed hit via `hit_landed` signal
 - Procedural audio generation: shoot/hurt sounds on player, 3D spatial hit sound on enemies
+- Enemy attack telegraph: 0.3s orange flash + one-shot TelegraphTimer before damage, with forward lunge on hit
 - Enemy hit stagger: brief movement pause on taking damage
 - Enemy death effect: white flash + scale-to-zero tween before `queue_free()`
 - Enemy direct-chase with `move_and_slide()` obstacle sliding
+- Damage direction indicators: 4 edge ColorRects on HUD show which direction damage came from, driven by `damage_taken_from` signal with angle calculation
 - Wave-based spawning: arena preloads enemy scene, instantiates at shuffled spawn points per wave
 - Signal-driven HUD (health bar, wave info, enemy count, game over panel, victory panel)
 - Victory state: freezes player input, releases mouse, shows victory UI

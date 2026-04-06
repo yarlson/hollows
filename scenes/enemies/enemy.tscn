@@ -30,6 +30,9 @@ surface_material_override/0 = SubResource("StandardMaterial3D_1")
 [node name="AttackTimer" type="Timer" parent="."]
 wait_time = 1.0
 
+[node name="TelegraphTimer" type="Timer" parent="."]
+one_shot = true
+
 [node name="HitSFX" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 volume_db = -3.0

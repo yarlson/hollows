@@ -2,6 +2,7 @@ extends CharacterBody3D
 
 signal health_changed(new_health: int, max_health: int)
 signal hit_landed
+signal damage_taken_from(angle: float)
 signal died
 
 const SPEED: float = 7.0
@@ -83,12 +84,14 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
-func take_damage(amount: int) -> void:
+func take_damage(amount: int, source_position := Vector3.INF) -> void:
 	if _health <= 0:
 		return
 	_health -= amount
 	health_changed.emit(_health, _max_health)
 	_flash_damage()
+	if source_position.is_finite():
+		_emit_damage_direction(source_position)
 	if _health <= 0:
 		_die()
 
@@ -142,6 +145,22 @@ func _make_noise(duration: float, freq: float, vol: float) -> AudioStreamWAV:
 	stream.mix_rate = sample_rate
 	stream.format = AudioStreamWAV.FORMAT_16_BITS
 	return stream
+
+
+func _emit_damage_direction(source_position: Vector3) -> void:
+	var to_source := source_position - global_position
+	to_source.y = 0.0
+	if to_source.length_squared() < 0.01:
+		return
+	to_source = to_source.normalized()
+	var forward := -transform.basis.z
+	forward.y = 0.0
+	forward = forward.normalized()
+	var right := transform.basis.x
+	right.y = 0.0
+	right = right.normalized()
+	var angle := atan2(to_source.dot(right), to_source.dot(forward))
+	damage_taken_from.emit(angle)
 
 
 func _die() -> void:
