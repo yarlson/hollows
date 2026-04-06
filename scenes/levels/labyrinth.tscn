@@ -76,7 +76,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 28)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(6, 4, 0.5)
+size = Vector3(6.5, 4, 0.5)
 material = SubResource("SpawnMaterial")
 
 [node name="SpawnWest" type="CSGBox3D" parent="Geometry"]
@@ -84,7 +84,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2, 23)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 10)
+size = Vector3(0.5, 4, 10.5)
 material = SubResource("SpawnMaterial")
 
 [node name="SpawnEast" type="CSGBox3D" parent="Geometry"]
@@ -92,7 +92,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2, 23)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 10)
+size = Vector3(0.5, 4, 10.5)
 material = SubResource("SpawnMaterial")
 
 [node name="SpawnNorthL" type="CSGBox3D" parent="Geometry"]
@@ -100,7 +100,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 2, 22)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(1.5, 4, 0.5)
+size = Vector3(2.0, 4, 0.5)
 material = SubResource("SpawnMaterial")
 
 [node name="SpawnNorthR" type="CSGBox3D" parent="Geometry"]
@@ -108,7 +108,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 2, 22)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(1.5, 4, 0.5)
+size = Vector3(2.0, 4, 0.5)
 material = SubResource("SpawnMaterial")
 
 [node name="CorridorSWest" type="CSGBox3D" parent="Geometry"]
@@ -116,7 +116,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2, 20)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 4)
+size = Vector3(0.5, 4, 4.5)
 material = SubResource("SouthHallMaterial")
 
 [node name="CorridorSEast" type="CSGBox3D" parent="Geometry"]
@@ -124,7 +124,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2, 20)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 4)
+size = Vector3(0.5, 4, 4.5)
 material = SubResource("SouthHallMaterial")
 
 [node name="SHallSouthL" type="CSGBox3D" parent="Geometry"]
@@ -132,7 +132,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 2, 18)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(6.5, 4, 0.5)
+size = Vector3(7.0, 4, 0.5)
 material = SubResource("SouthHallMaterial")
 
 [node name="SHallSouthR" type="CSGBox3D" parent="Geometry"]
@@ -140,7 +140,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.75, 2, 18)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(6.5, 4, 0.5)
+size = Vector3(7.0, 4, 0.5)
 material = SubResource("SouthHallMaterial")
 
 [node name="SHallNorthL" type="CSGBox3D" parent="Geometry"]
@@ -148,7 +148,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 2, 10)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(6.5, 4, 0.5)
+size = Vector3(7.0, 4, 0.5)
 material = SubResource("SouthHallMaterial")
 
 [node name="SHallNorthR" type="CSGBox3D" parent="Geometry"]
@@ -156,39 +156,39 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.75, 2, 10)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(6.5, 4, 0.5)
+size = Vector3(7.0, 4, 0.5)
 material = SubResource("SouthHallMaterial")
 
 [node name="SHallWestS" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 11.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 11.125)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 2.5)
+size = Vector3(0.5, 4, 2.75)
 material = SubResource("SouthHallMaterial")
 
 [node name="SHallWestN" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 16.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 16.875)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 2.5)
+size = Vector3(0.5, 4, 2.75)
 material = SubResource("SouthHallMaterial")
 
 [node name="SHallEastS" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 11.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 11.125)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 2.5)
+size = Vector3(0.5, 4, 2.75)
 material = SubResource("SouthHallMaterial")
 
 [node name="SHallEastN" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 16.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 16.875)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 2.5)
+size = Vector3(0.5, 4, 2.75)
 material = SubResource("SouthHallMaterial")
 
 [node name="CombatWNorth" type="CSGBox3D" parent="Geometry"]
@@ -196,7 +196,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2, 10)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(8, 4, 0.5)
+size = Vector3(8.5, 4, 0.5)
 material = SubResource("CombatMaterial")
 
 [node name="CombatWSouth" type="CSGBox3D" parent="Geometry"]
@@ -204,7 +204,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2, 18)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(8, 4, 0.5)
+size = Vector3(8.5, 4, 0.5)
 material = SubResource("CombatMaterial")
 
 [node name="CombatWWest" type="CSGBox3D" parent="Geometry"]
@@ -212,7 +212,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 2, 14)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 8)
+size = Vector3(0.5, 4, 8.5)
 material = SubResource("CombatMaterial")
 
 [node name="CombatENorth" type="CSGBox3D" parent="Geometry"]
@@ -220,7 +220,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2, 10)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(8, 4, 0.5)
+size = Vector3(8.5, 4, 0.5)
 material = SubResource("CombatMaterial")
 
 [node name="CombatESouth" type="CSGBox3D" parent="Geometry"]
@@ -228,7 +228,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2, 18)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(8, 4, 0.5)
+size = Vector3(8.5, 4, 0.5)
 material = SubResource("CombatMaterial")
 
 [node name="CombatEEast" type="CSGBox3D" parent="Geometry"]
@@ -236,7 +236,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 2, 14)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 8)
+size = Vector3(0.5, 4, 8.5)
 material = SubResource("CombatMaterial")
 
 [node name="CorridorNWest" type="CSGBox3D" parent="Geometry"]
@@ -244,7 +244,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2, 7)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 6)
+size = Vector3(0.5, 4, 6.5)
 material = SubResource("NorthMaterial")
 
 [node name="CorridorNEast" type="CSGBox3D" parent="Geometry"]
@@ -252,7 +252,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2, 7)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 6)
+size = Vector3(0.5, 4, 6.5)
 material = SubResource("NorthMaterial")
 
 [node name="NorthWall" type="CSGBox3D" parent="Geometry"]
@@ -260,7 +260,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -4)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(32, 4, 0.5)
+size = Vector3(32.5, 4, 0.5)
 material = SubResource("NorthMaterial")
 
 [node name="NHallSouthL" type="CSGBox3D" parent="Geometry"]
@@ -268,7 +268,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 2, 4)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(6.5, 4, 0.5)
+size = Vector3(7.0, 4, 0.5)
 material = SubResource("NorthMaterial")
 
 [node name="NHallSouthR" type="CSGBox3D" parent="Geometry"]
@@ -276,39 +276,39 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.75, 2, 4)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(6.5, 4, 0.5)
+size = Vector3(7.0, 4, 0.5)
 material = SubResource("NorthMaterial")
 
 [node name="NHallWestUpper" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, -2.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, -2.375)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 3.5)
+size = Vector3(0.5, 4, 3.75)
 material = SubResource("NorthMaterial")
 
 [node name="NHallWestLower" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 3.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 3.375)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 1.5)
+size = Vector3(0.5, 4, 1.75)
 material = SubResource("NorthMaterial")
 
 [node name="NHallEastUpper" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, -2.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, -2.875)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 2.5)
+size = Vector3(0.5, 4, 2.75)
 material = SubResource("NorthMaterial")
 
 [node name="NHallEastLower" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 2.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 2.875)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 2.5)
+size = Vector3(0.5, 4, 2.75)
 material = SubResource("NorthMaterial")
 
 [node name="KeyRoomSouth" type="CSGBox3D" parent="Geometry"]
@@ -316,7 +316,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2, 4)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(8, 4, 0.5)
+size = Vector3(8.5, 4, 0.5)
 material = SubResource("KeyRoomMaterial")
 
 [node name="KeyRoomEast" type="CSGBox3D" parent="Geometry"]
@@ -324,7 +324,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 2, 0)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 8)
+size = Vector3(0.5, 4, 8.5)
 material = SubResource("KeyRoomMaterial")
 
 [node name="NWCorrNorth" type="CSGBox3D" parent="Geometry"]
@@ -332,7 +332,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, -0.5)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(4, 4, 0.5)
+size = Vector3(4.5, 4, 0.5)
 material = SubResource("NorthMaterial")
 
 [node name="NWCorrSouth" type="CSGBox3D" parent="Geometry"]
@@ -340,7 +340,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, 2.5)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(4, 4, 0.5)
+size = Vector3(4.5, 4, 0.5)
 material = SubResource("NorthMaterial")
 
 [node name="DoorFrameUpper" type="CSGBox3D" parent="Geometry"]
@@ -348,7 +348,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2, -2.25)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 3.5)
+size = Vector3(0.5, 4, 4.0)
 material = SubResource("ExitMaterial")
 
 [node name="DoorFrameLower" type="CSGBox3D" parent="Geometry"]
@@ -356,7 +356,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2, 3.25)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 1.5)
+size = Vector3(0.5, 4, 2.0)
 material = SubResource("ExitMaterial")
 
 [node name="ExitRoomSouth" type="CSGBox3D" parent="Geometry"]
@@ -364,7 +364,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 2, 4)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(4, 4, 0.5)
+size = Vector3(4.5, 4, 0.5)
 material = SubResource("ExitMaterial")
 
 [node name="ExitRoomWest" type="CSGBox3D" parent="Geometry"]
@@ -372,7 +372,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 2, 0)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 8)
+size = Vector3(0.5, 4, 8.5)
 material = SubResource("ExitMaterial")
 
 [node name="PerimWest" type="CSGBox3D" parent="Geometry"]
@@ -380,7 +380,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 2, 7)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 6)
+size = Vector3(0.5, 4, 6.5)
 material = SubResource("CombatMaterial")
 
 [node name="PerimEast" type="CSGBox3D" parent="Geometry"]
@@ -388,7 +388,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 2, 7)
 use_collision = true
 collision_layer = 1
 collision_mask = 0
-size = Vector3(0.5, 4, 6)
+size = Vector3(0.5, 4, 6.5)
 material = SubResource("CombatMaterial")
 
 [node name="SouthHallPillar" type="CSGBox3D" parent="Geometry"]
