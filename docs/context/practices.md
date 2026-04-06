@@ -91,7 +91,10 @@
 - Player signals (`health_changed`, `hit_landed`, `damage_taken_from`, `died`) wired to HUD in `_ready()`
 - Enemies placed as child instances under an `Enemies` container node; level script iterates children and connects each `died` signal via `_wire_enemies()`
 - Health pickups placed as child instances under a `Pickups` container node; no signal wiring needed (self-contained via duck-typed `heal()`)
-- Game over on player death; `_game_over` flag prevents duplicate end states and stops elapsed time counter
+- Key pickup `picked_up` signal connected to level script; sets `_has_key`, updates HUD key status, removes door via `queue_free()`
+- Exit trigger `body_entered` signal connected to level script; checks player group + `_has_key` + not `_game_over` before triggering victory
+- Game over on player death; victory on reaching exit with key; `_game_over` flag prevents duplicate end states and stops elapsed time counter
+- Victory freezes player by disabling `_unhandled_input` and `_physics_process`, then releases mouse
 - HUD `restart_requested` signal triggers `change_scene_to_file.call_deferred()`
 
 ## Scene Restart

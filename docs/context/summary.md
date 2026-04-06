@@ -1,6 +1,6 @@
 ## What
 
-First-person shooter prototype built in Godot 4.6 with GDScript. A labyrinth-based FPS: player navigates interconnected rooms and corridors, fights placed enemies, and survives. Three enemy variants (standard, runner, brute) with direct-chase AI, procedurally generated sound effects, health/damage with visual feedback, HUD with kills tracking, and a game loop (explore → fight → death/restart).
+First-person shooter prototype built in Godot 4.6 with GDScript. A labyrinth-based FPS: player navigates interconnected rooms and corridors, fights placed enemies, collects a key, unlocks the exit, and escapes. Three enemy variants (standard, runner, brute) with direct-chase AI, procedurally generated sound effects, health/damage with visual feedback, HUD with key status and kills tracking, and a complete game loop (explore → fight → find key → exit → victory or death → restart).
 
 ## Architecture
 
@@ -14,7 +14,7 @@ First-person shooter prototype built in Godot 4.6 with GDScript. A labyrinth-bas
 
 ## Core Flow
 
-Player spawns in labyrinth → explores rooms and corridors → fights enemies placed throughout the level → dies or kills all enemies. Death triggers game over panel. Restart reloads the level scene via `change_scene_to_file`.
+Player spawns in labyrinth → explores rooms and corridors → fights placed enemies → finds key pickup (guarded by brute) → door disappears → reaches exit trigger → victory. Death at any point triggers game over. Restart reloads the level scene via `change_scene_to_file`.
 
 ## System State
 
@@ -23,8 +23,11 @@ Player spawns in labyrinth → explores rooms and corridors → fights enemies p
 - Enemies: 6 placed instances — 3 standard in combat rooms, 2 runners (one in combat room, one in north corridor), 1 brute in key room; all use direct-chase AI, distance-based detection/attack, telegraphed melee with lunge, hit stagger, tween death effect, 3D spatial hit sound
 - HUD: color-coded health bar (green/yellow/red by HP percentage), crosshair with hitmarker flash, damage direction indicators, kills counter, key status label ("KEY: ---" / "KEY: FOUND"), game over panel (kills + time), victory panel (kills + time)
 - Health pickups: 2 green emissive spheres placed in the level; persist until collected; Area3D with duck-typed `heal()` on player contact
+- Key pickup: gold emissive rotating cube in key room; Area3D emits `picked_up` signal on player contact; level script unlocks the door
+- Door: StaticBody3D blocking exit corridor; removed via `queue_free()` when key is collected
+- Exit trigger: Area3D behind the door; entering it with key triggers victory
 - Audio: all sounds procedurally generated at runtime via AudioStreamWAV (no audio asset files)
-- Game loop: explore labyrinth → fight → death → game over → restart
+- Game loop: explore labyrinth → fight → find key → door opens → reach exit → victory or death → restart
 
 ## Capabilities
 
@@ -40,8 +43,10 @@ Player spawns in labyrinth → explores rooms and corridors → fights enemies p
 - Enemy direct-chase with `move_and_slide()` obstacle sliding through corridors
 - Damage direction indicators: 4 edge ColorRects on HUD show which direction damage came from
 - Static enemy placement: enemies placed as scene instances under `Enemies` node, `died` signal wired by level script at `_ready()`
+- Key/door/exit progression: key pickup triggers door removal, exit trigger behind door triggers victory
 - Kill counter and elapsed time tracked by level script, kills displayed on HUD
 - Signal-driven HUD (health bar, key status, kills, game over summary, victory summary)
+- Victory state: freezes player input, releases mouse, shows victory UI
 - Scene restart via `change_scene_to_file.call_deferred()`
 
 ## Tech Stack

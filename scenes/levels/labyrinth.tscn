@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scenes/levels/labyrinth.gd" id="0_script"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
@@ -7,6 +7,16 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy_runner.tscn" id="4_runner"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy_brute.tscn" id="5_brute"]
 [ext_resource type="PackedScene" path="res://scenes/pickups/health_pickup.tscn" id="6_health"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/key_pickup.tscn" id="7_key"]
+
+[sub_resource type="StandardMaterial3D" id="DoorMaterial"]
+albedo_color = Color(0.5, 0.2, 0.1, 1)
+
+[sub_resource type="BoxShape3D" id="DoorShape"]
+size = Vector3(0.5, 4, 3)
+
+[sub_resource type="BoxShape3D" id="ExitShape"]
+size = Vector3(1, 4, 3)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 
@@ -388,6 +398,29 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0.5, 14)
 
 [node name="HealthPickup2" parent="Pickups" instance=ExtResource("6_health")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.5, 1)
+
+[node name="KeyPickup" parent="." instance=ExtResource("7_key")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.5, -1)
+
+[node name="Door" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2, 1)
+collision_layer = 1
+collision_mask = 0
+
+[node name="DoorCollision" type="CollisionShape3D" parent="Door"]
+shape = SubResource("DoorShape")
+
+[node name="DoorMesh" type="CSGBox3D" parent="Door"]
+size = Vector3(0.5, 4, 3)
+material = SubResource("DoorMaterial")
+
+[node name="ExitTrigger" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 2, 1)
+collision_layer = 0
+collision_mask = 2
+
+[node name="ExitCollision" type="CollisionShape3D" parent="ExitTrigger"]
+shape = SubResource("ExitShape")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 25)

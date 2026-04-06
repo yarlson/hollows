@@ -22,3 +22,6 @@
 - **head bob** — sine-based vertical oscillation of the head node while the player moves on the ground; provides grounded movement feel
 - **labyrinth** — the interconnected multi-room level layout; rooms connected by corridors with chokepoints and landmarks
 - **placed enemy** — an enemy instance positioned directly in the level scene at a fixed location, as opposed to dynamically spawned
+- **key pickup** — gold emissive rotating Area3D cube that emits `picked_up` signal on player contact; collecting it unlocks the exit door
+- **door** — StaticBody3D on the Environment layer blocking the exit corridor; removed via `queue_free()` when the key is collected
+- **exit trigger** — Area3D placed behind the locked door; entering it with the key triggers victory
