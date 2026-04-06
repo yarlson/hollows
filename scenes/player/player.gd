@@ -8,6 +8,7 @@ const JUMP_VELOCITY: float = 4.5
 const ACCELERATION: float = 10.0
 const FRICTION: float = 10.0
 const DAMAGE: int = 10
+const FIRE_RATE: float = 0.2
 const DEGREES_PER_UNIT: float = 0.001
 
 @export_range(1, 100, 1) var mouse_sensitivity: int = 50
@@ -16,9 +17,12 @@ var _health: int = 100
 var _max_health: int = 100
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var _mouse_captured: bool = true
+var _can_shoot: bool = true
 
 @onready var _head: Node3D = $Head
 @onready var _raycast: RayCast3D = $Head/Camera3D/RayCast3D
+@onready var _muzzle_flash: OmniLight3D = $Head/Camera3D/MuzzleFlash
+@onready var _damage_overlay: ColorRect = $DamageOverlay
 
 
 func _ready() -> void:
@@ -79,16 +83,37 @@ func take_damage(amount: int) -> void:
 		return
 	_health -= amount
 	health_changed.emit(_health, _max_health)
+	_flash_damage()
 	if _health <= 0:
 		_die()
 
 
 func _shoot() -> void:
+	if not _can_shoot:
+		return
+	_can_shoot = false
 	_raycast.force_raycast_update()
 	if _raycast.is_colliding():
 		var collider := _raycast.get_collider()
 		if collider.has_method(&"take_damage"):
 			collider.take_damage(DAMAGE)
+	_flash_muzzle()
+	await get_tree().create_timer(FIRE_RATE).timeout
+	_can_shoot = true
+
+
+func _flash_muzzle() -> void:
+	_muzzle_flash.visible = true
+	await get_tree().create_timer(0.05).timeout
+	if is_instance_valid(self):
+		_muzzle_flash.visible = false
+
+
+func _flash_damage() -> void:
+	_damage_overlay.visible = true
+	await get_tree().create_timer(0.15).timeout
+	if is_instance_valid(self):
+		_damage_overlay.visible = false
 
 
 func _die() -> void:
