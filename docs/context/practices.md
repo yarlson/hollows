@@ -82,6 +82,13 @@
 - Camera kick: each shot applies a small upward pitch impulse to the head node; smooth recovery in `_physics_process` at a fixed angular rate, clamped to pitch limits; fully recovers so aim is never permanently offset
 - Head bob: sine-based vertical oscillation on head node `position.y` while moving on floor; resets smoothly when stationary or airborne; base Y cached from scene transform in `_ready()`
 
+## CSG Wall Joint Rule
+
+- N-S walls (thin in X) act as "through" walls at their original length
+- E-W walls (thin in Z) extend 0.25 past each connecting N-S wall to its outer face, filling the corner square
+- The overlap is hidden inside the N-S wall's solid body; only top/bottom faces overlap (invisible from player height)
+- Prevents visible gaps at corners and T-junctions without z-fighting on side faces
+
 ## Physics Rules
 
 - Moving bodies use only convex shapes (CapsuleShape3D, BoxShape3D, SphereShape3D)
