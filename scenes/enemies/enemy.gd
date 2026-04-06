@@ -24,6 +24,7 @@ var _stagger_time: float = 0.0
 var _time_since_last_seen: float = 0.0
 var _target: Node3D = null
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+var _alert_sfx: AudioStreamPlayer3D = null
 
 @onready var _mesh: MeshInstance3D = $MeshInstance3D
 @onready var _attack_timer: Timer = $AttackTimer
@@ -38,6 +39,10 @@ func _ready() -> void:
 	_mesh.set_surface_override_material(0, _mesh.get_surface_override_material(0).duplicate())
 	_set_color(normal_color)
 	_hit_sfx.stream = _make_hit_sound()
+	_alert_sfx = AudioStreamPlayer3D.new()
+	_alert_sfx.stream = _make_alert_sound()
+	_alert_sfx.volume_db = -6.0
+	add_child(_alert_sfx)
 
 
 func _physics_process(delta: float) -> void:
@@ -108,6 +113,7 @@ func _update_target_state() -> void:
 			if can_see:
 				_time_since_last_seen = 0.0
 				_state = State.CHASE
+				_alert_sfx.play()
 		State.CHASE:
 			if can_see:
 				_time_since_last_seen = 0.0
@@ -221,6 +227,28 @@ func _make_hit_sound() -> AudioStreamWAV:
 		var envelope := 1.0 - (t / duration)
 		var freq := 1200.0 - t * 8000.0
 		var sample := sin(t * freq * TAU) * envelope * 0.5
+		var value := int(clampf(sample, -1.0, 1.0) * 32767.0)
+		data[i * 2] = value & 0xFF
+		data[i * 2 + 1] = (value >> 8) & 0xFF
+	var stream := AudioStreamWAV.new()
+	stream.data = data
+	stream.mix_rate = sample_rate
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	return stream
+
+
+func _make_alert_sound() -> AudioStreamWAV:
+	var sample_rate := 22050
+	var duration := 0.15
+	var samples := int(duration * sample_rate)
+	var data := PackedByteArray()
+	data.resize(samples * 2)
+	for i in samples:
+		var t := float(i) / sample_rate
+		var envelope := (1.0 - t / duration) * 0.8
+		var sine := sin(t * 120.0 * TAU) * 0.6
+		var noise := (randf() * 2.0 - 1.0) * 0.4
+		var sample := (sine + noise) * envelope
 		var value := int(clampf(sample, -1.0, 1.0) * 32767.0)
 		data[i * 2] = value & 0xFF
 		data[i * 2 + 1] = (value >> 8) & 0xFF

@@ -6,6 +6,7 @@ var _kills: int = 0
 var _elapsed_time: float = 0.0
 var _key_sfx: AudioStreamPlayer = null
 var _door_sfx: AudioStreamPlayer = null
+var _ambient_sfx: AudioStreamPlayer = null
 
 @onready var _player: CharacterBody3D = $Player
 @onready var _hud: CanvasLayer = $HUD
@@ -32,6 +33,11 @@ func _ready() -> void:
 	_door_sfx.stream = _make_door_sound()
 	_door_sfx.volume_db = -3.0
 	add_child(_door_sfx)
+	_ambient_sfx = AudioStreamPlayer.new()
+	_ambient_sfx.stream = _make_ambient_drone()
+	_ambient_sfx.volume_db = -18.0
+	add_child(_ambient_sfx)
+	_ambient_sfx.play()
 
 
 func _wire_enemies() -> void:
@@ -126,4 +132,28 @@ func _make_door_sound() -> AudioStreamWAV:
 	stream.data = data
 	stream.mix_rate = sample_rate
 	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	return stream
+
+
+func _make_ambient_drone() -> AudioStreamWAV:
+	var sample_rate := 22050
+	var duration := 2.0
+	var samples := int(duration * sample_rate)
+	var data := PackedByteArray()
+	data.resize(samples * 2)
+	for i in samples:
+		var t := float(i) / sample_rate
+		var s1 := sin(t * 55.0 * TAU) * 0.3
+		var s2 := sin(t * 82.5 * TAU) * 0.15
+		var noise := (randf() * 2.0 - 1.0) * 0.05
+		var sample := (s1 + s2 + noise) * 0.4
+		var value := int(clampf(sample, -1.0, 1.0) * 32767.0)
+		data[i * 2] = value & 0xFF
+		data[i * 2 + 1] = (value >> 8) & 0xFF
+	var stream := AudioStreamWAV.new()
+	stream.data = data
+	stream.mix_rate = sample_rate
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	stream.loop_end = samples
 	return stream
