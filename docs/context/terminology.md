@@ -7,3 +7,6 @@
 - **screen_relative** — DPI/resolution-independent mouse motion property (Godot 4.3+)
 - **direct chase** — enemy movement toward player using flat distance + `move_and_slide()` without navmesh pathfinding
 - **canvas_items stretch** — Godot display mode that scales 2D/UI from a design resolution to actual window size
+- **procedural audio** — sound effects generated at runtime from synthesized waveforms via AudioStreamWAV, eliminating external audio assets
+- **muzzle flash** — brief OmniLight3D pulse on the camera when the player fires, providing visual shooting feedback
+- **damage overlay** — brief ColorRect flash over the screen when the player takes damage

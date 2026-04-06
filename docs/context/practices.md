@@ -29,6 +29,19 @@
 - Checked via `has_method(&"take_damage")` duck typing
 - No shared base class or interface required
 - Dead target detected by checking `collision_layer == 0`
+- Player sets `collision_layer = 0` and disables physics/input processing on death
+
+## Material Duplication
+
+- All scene instances that modify material properties call `_mesh.get_surface_override_material(0).duplicate()` in `_ready()`
+- Prevents shared SubResource materials from affecting all instances when flashing hit color
+
+## Procedural Audio
+
+- All game sounds are generated at runtime via `AudioStreamWAV` (no imported audio files)
+- Synthesized from sine waves + noise with envelope decay
+- Player uses `AudioStreamPlayer` (non-spatial) for shoot and hurt sounds
+- Enemies use `AudioStreamPlayer3D` for spatially positioned hit sounds
 
 ## Enemy AI Pattern
 
@@ -49,4 +62,3 @@
 
 - Use `get_tree().change_scene_to_file.call_deferred()` for clean restart
 - Never call scene change from within a signal handler without deferring
-- Player sets `collision_layer = 0` on death to detach from physics
