@@ -21,12 +21,10 @@ var _health_fill_style: StyleBoxFlat = null
 @onready var _restart_button: Button = $GameOverPanel/VBox/RestartButton
 @onready var _victory_panel: PanelContainer = $VictoryPanel
 @onready var _victory_restart: Button = $VictoryPanel/VBox/RestartButton
-@onready var _wave_label: Label = $WaveInfo/WaveLabel
-@onready var _enemy_count_label: Label = $WaveInfo/EnemyCountLabel
 @onready var _kills_label: Label = $KillsLabel
 @onready var _game_over_summary: Label = $GameOverPanel/VBox/SummaryLabel
 @onready var _victory_summary: Label = $VictoryPanel/VBox/SummaryLabel
-@onready var _wave_announcement: Label = $WaveAnnouncement
+@onready var _key_status: Label = $KeyStatus
 @onready var _damage_top: ColorRect = $DamageIndicators/Top
 @onready var _damage_bottom: ColorRect = $DamageIndicators/Bottom
 @onready var _damage_left: ColorRect = $DamageIndicators/Left
@@ -56,34 +54,24 @@ func update_health(new_health: int, max_health: int) -> void:
 			_health_fill_style.bg_color = HEALTH_COLOR_HIGH
 
 
-func update_wave_info(wave: int, total_waves: int) -> void:
-	_wave_label.text = "Wave %d/%d" % [wave, total_waves]
-
-
-func update_enemy_count(count: int) -> void:
-	_enemy_count_label.text = "Enemies: %d" % count
-
-
 func update_kills(kills: int) -> void:
 	_kills_label.text = "Kills: %d" % kills
 
 
-func announce_wave(wave: int) -> void:
-	_wave_announcement.text = "WAVE %d" % wave
-	_wave_announcement.modulate = Color.WHITE
-	_wave_announcement.visible = true
-	var tween := create_tween()
-	tween.tween_interval(1.0)
-	tween.tween_property(_wave_announcement, "modulate:a", 0.0, 0.5)
-	tween.tween_callback(func() -> void: _wave_announcement.visible = false)
+func update_key_status(has_key: bool) -> void:
+	_key_status.text = "KEY: FOUND" if has_key else "KEY: ---"
 
 
-func show_game_over(kills: int, wave: int, total_waves: int) -> void:
-	_game_over_summary.text = "Kills: %d  |  Wave %d/%d" % [kills, wave, total_waves]
+func show_game_over(kills: int, time_seconds: float) -> void:
+	@warning_ignore("integer_division")
+	var mins := int(time_seconds) / 60
+	var secs := int(time_seconds) % 60
+	_game_over_summary.text = "Kills: %d  |  Time: %d:%02d" % [kills, mins, secs]
 	_game_over_panel.visible = true
 
 
 func show_victory(kills: int, time_seconds: float) -> void:
+	@warning_ignore("integer_division")
 	var mins := int(time_seconds) / 60
 	var secs := int(time_seconds) % 60
 	_victory_summary.text = "Kills: %d  |  Time: %d:%02d" % [kills, mins, secs]

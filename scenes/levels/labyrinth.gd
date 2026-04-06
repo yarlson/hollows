@@ -36,7 +36,7 @@ func _process(delta: float) -> void:
 
 func _on_player_died() -> void:
 	_game_over = true
-	_hud.show_game_over(_kills, 0, 0)
+	_hud.show_game_over(_kills, _elapsed_time)
 
 
 func _on_restart() -> void:
