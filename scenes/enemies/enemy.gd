@@ -16,10 +16,12 @@ const TELEGRAPH_COLOR := Color(1.0, 0.5, 0.0)
 @export var telegraph_duration: float = 0.3
 @export var lunge_speed: float = 8.0
 @export var normal_color: Color = Color(0.4, 0.0, 0.0)
+@export var los_memory_duration: float = 3.0
 
 var _health: int = 30
 var _state: State = State.IDLE
 var _stagger_time: float = 0.0
+var _time_since_last_seen: float = 0.0
 var _target: Node3D = null
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
@@ -99,19 +101,26 @@ func _update_target_state() -> void:
 			return
 
 	var dist := _flat_distance_to(_target)
+	var can_see := dist < detection_range and _has_line_of_sight()
 
 	match _state:
 		State.IDLE:
-			if dist < detection_range:
+			if can_see:
+				_time_since_last_seen = 0.0
 				_state = State.CHASE
 		State.CHASE:
+			if can_see:
+				_time_since_last_seen = 0.0
+			else:
+				_time_since_last_seen += get_physics_process_delta_time()
+				if _time_since_last_seen > los_memory_duration:
+					_target = null
+					_state = State.IDLE
+					return
 			if dist < attack_range:
 				_state = State.ATTACK
 				_begin_telegraph()
 				_attack_timer.start(attack_cooldown)
-			elif dist > detection_range:
-				_target = null
-				_state = State.IDLE
 		State.ATTACK:
 			if dist > attack_range * 1.5:
 				_telegraph_timer.stop()
@@ -146,6 +155,18 @@ func _flat_direction_to(target: Node3D) -> Vector3:
 		)
 		. normalized()
 	)
+
+
+func _has_line_of_sight() -> bool:
+	if not _target_is_alive():
+		return false
+	var space_state := get_world_3d().direct_space_state
+	var from := global_position + Vector3.UP * 1.0
+	var to := _target.global_position + Vector3.UP * 1.0
+	var query := PhysicsRayQueryParameters3D.create(from, to, 1)
+	query.exclude = [get_rid()]
+	var result := space_state.intersect_ray(query)
+	return result.is_empty()
 
 
 func _begin_telegraph() -> void:
