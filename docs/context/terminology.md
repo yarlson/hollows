@@ -4,5 +4,6 @@
 - **collision layer** — bitmask declaring what physics layer a body exists on
 - **collision mask** — bitmask declaring which physics layers a body detects/collides with
 - **CSG** — Constructive Solid Geometry; used for rapid level prototyping with built-in collision
-- **NavigationRegion3D** — node that holds a baked NavigationMesh for pathfinding
 - **screen_relative** — DPI/resolution-independent mouse motion property (Godot 4.3+)
+- **direct chase** — enemy movement toward player using flat distance + `move_and_slide()` without navmesh pathfinding
+- **canvas_items stretch** — Godot display mode that scales 2D/UI from a design resolution to actual window size

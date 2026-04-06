@@ -18,13 +18,13 @@ var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var _mouse_captured: bool = true
 
 @onready var _head: Node3D = $Head
-@onready var _camera: Camera3D = $Head/Camera3D
 @onready var _raycast: RayCast3D = $Head/Camera3D/RayCast3D
 
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	_raycast.enabled = true
+	health_changed.emit(_health, _max_health)
 
 
 func _notification(what: int) -> void:
