@@ -1,7 +1,7 @@
 ## GDScript Conventions
 
 - Static typing on all variables, parameters, and return types
-- Code order: extends → signals → enums → constants → @export → vars → @onready → lifecycle → public → _private
+- Code order: extends → signals → enums → constants → @export → vars → @onready → lifecycle → public → \_private
 - `snake_case` for files/functions/variables/signals; `PascalCase` for classes/nodes; `CONSTANT_CASE` for constants
 - `&"action_name"` (StringName) for all input action checks
 - `@onready` to cache node references; never use `$Path` in per-frame code

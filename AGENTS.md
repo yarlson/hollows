@@ -111,6 +111,17 @@ Input.mouse_mode = Input.MOUSE_MODE_CAPTURED   # in _ready
 Input.mouse_mode = Input.MOUSE_MODE_VISIBLE    # on death/menu
 ```
 
+Handle window focus changes — mouse capture is lost when switching windows:
+
+```gdscript
+func _notification(what: int) -> void:
+    if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
+        if _mouse_captured:
+            Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+```
+
+When mouse is not captured, click anywhere to re-capture. Escape always releases.
+
 ## FPS Character Setup
 
 Use `CharacterBody3D`. This is the only correct choice for FPS player/enemies in Godot 4.
@@ -144,12 +155,53 @@ if raycast.is_colliding():
 
 The `has_method` pattern is the damage interface — any damageable node just implements `take_damage()`.
 
-## Enemy Navigation
+## Enemy AI
 
-- Requires `NavigationRegion3D` in the level with a baked `NavigationMesh`
-- CSG geometry must have `use_collision = true` to be parsed for navmesh
-- Don't set `target_position` every frame — update every 0.25s
-- Wait one physics frame after bake before spawning enemies
+### Direct Chase Over NavigationAgent3D
+
+For simple arenas, use direct movement toward the player with `move_and_slide()` — it handles obstacle collision/sliding automatically. Do NOT use `NavigationAgent3D` unless pathfinding around complex geometry is absolutely required.
+
+`NavigationAgent3D` has severe issues:
+
+- `get_next_path_position()` returns the agent's own position after `change_scene_to_file()` — enemies freeze
+- `is_navigation_finished()` returns true when no path exists yet — enemies never start moving
+- Runtime navmesh baking with CSG requires fragile multi-frame timing that breaks on scene reload
+- NavigationServer map sync is async in Godot 4.4+ — no reliable way to know when navigation is ready
+
+The working pattern for simple FPS arenas:
+
+```gdscript
+# Distance-based state machine — no navmesh needed
+var dist := _flat_distance_to(_target)
+match _state:
+    State.IDLE:
+        if dist < DETECTION_RANGE:
+            _state = State.CHASE
+    State.CHASE:
+        var direction := _flat_direction_to(_target)
+        velocity.x = direction.x * CHASE_SPEED
+        velocity.z = direction.z * CHASE_SPEED
+        move_and_slide()  # handles obstacle sliding
+```
+
+### Timer-Based Attacks, Not Coroutines
+
+Never use `await` in combat logic called from `_physics_process`. Use Timer nodes instead:
+
+- `await` in per-frame functions spawns coroutines that pile up and cause hangs
+- Multiple `_attack_loop()` coroutines can run simultaneously if state changes rapidly
+- Timer nodes are deterministic, stoppable, and don't leak
+
+```gdscript
+# GOOD — Timer node
+_attack_timer.start(ATTACK_COOLDOWN)
+
+# BAD — coroutine from physics
+func _attack_loop() -> void:
+    while attacking:
+        deal_damage()
+        await get_tree().create_timer(1.0).timeout  # accumulates coroutines
+```
 
 ## Lint and Format
 
@@ -161,6 +213,42 @@ gdlint scenes/**/*.gd
 ```
 
 Fix all issues before moving on. Code must pass both checks cleanly.
+
+## Scene Reload
+
+- Always use `get_tree().change_scene_to_file.call_deferred()` for restart — never `reload_current_scene()` (breaks NavigationServer, physics state)
+- Never call `change_scene_to_file()` directly from a signal handler — must be deferred or causes physics callback errors
+- On player death, set `collision_layer = 0` to detach from all physics interactions before scene reload
+
+## Material Sharing Trap
+
+Scene instances share SubResource materials. Modifying a shared material (e.g., flash color) changes ALL instances. Always duplicate in `_ready()`:
+
+```gdscript
+_mesh.set_surface_override_material(0, _mesh.get_surface_override_material(0).duplicate())
+```
+
+## HiDPI / Retina Displays
+
+Set a design resolution with `canvas_items` stretch mode in project.godot — Godot scales all UI automatically:
+
+```ini
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+```
+
+Without this, UI elements (crosshairs, health bars, text) are tiny on Retina displays.
+
+## Writing .tscn Files
+
+Write scene files as text directly rather than relying on MCP `add_node` tools — MCP tools often fail to persist properties like positions, shapes, and collision layers. The .tscn text format is straightforward and reliable.
+
+## Scene Node Lookups
+
+Use `$Path/To/Node` for node references in scripts. Avoid `%UniqueNameInOwner` syntax — it fails silently in some scene instancing contexts (e.g., CanvasLayer children).
 
 ## Scene/File Hygiene
 
