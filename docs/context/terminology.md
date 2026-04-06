@@ -1,0 +1,8 @@
+- **hitscan** — instant-hit weapon using RayCast3D; no projectile travel time
+- **duck-typed damage** — any node implementing `take_damage(amount: int)` is damageable; no base class required
+- **call down, signal up** — parents call children's methods directly; children emit signals to communicate upward
+- **collision layer** — bitmask declaring what physics layer a body exists on
+- **collision mask** — bitmask declaring which physics layers a body detects/collides with
+- **CSG** — Constructive Solid Geometry; used for rapid level prototyping with built-in collision
+- **NavigationRegion3D** — node that holds a baked NavigationMesh for pathfinding
+- **screen_relative** — DPI/resolution-independent mouse motion property (Godot 4.3+)
