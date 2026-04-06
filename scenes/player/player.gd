@@ -74,9 +74,27 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
+func take_damage(amount: int) -> void:
+	if _health <= 0:
+		return
+	_health -= amount
+	health_changed.emit(_health, _max_health)
+	if _health <= 0:
+		_die()
+
+
 func _shoot() -> void:
 	_raycast.force_raycast_update()
 	if _raycast.is_colliding():
 		var collider := _raycast.get_collider()
 		if collider.has_method(&"take_damage"):
 			collider.take_damage(DAMAGE)
+
+
+func _die() -> void:
+	died.emit()
+	collision_layer = 0
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	_mouse_captured = false
+	set_physics_process(false)
+	set_process_unhandled_input(false)
