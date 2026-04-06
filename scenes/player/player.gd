@@ -7,6 +7,7 @@ const SPEED: float = 7.0
 const JUMP_VELOCITY: float = 4.5
 const ACCELERATION: float = 10.0
 const FRICTION: float = 10.0
+const DAMAGE: int = 10
 const DEGREES_PER_UNIT: float = 0.001
 
 @export_range(1, 100, 1) var mouse_sensitivity: int = 50
@@ -14,6 +15,7 @@ const DEGREES_PER_UNIT: float = 0.001
 var _health: int = 100
 var _max_health: int = 100
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+var _mouse_captured: bool = true
 
 @onready var _head: Node3D = $Head
 @onready var _camera: Camera3D = $Head/Camera3D
@@ -22,20 +24,34 @@ var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_raycast.enabled = true
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
+		if _mouse_captured:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+		if event is InputEventMouseButton and event.pressed:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			_mouse_captured = true
+		return
+
 	if event is InputEventMouseMotion:
 		var motion: Vector2 = event.screen_relative * mouse_sensitivity * DEGREES_PER_UNIT
 		rotate_y(-deg_to_rad(motion.x))
 		_head.rotate_x(-deg_to_rad(motion.y))
 		_head.rotation.x = clampf(_head.rotation.x, deg_to_rad(-89.0), deg_to_rad(89.0))
 
+	if event.is_action_pressed(&"shoot"):
+		_shoot()
+
 	if event.is_action_pressed(&"ui_cancel"):
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		else:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		_mouse_captured = false
 
 
 func _physics_process(delta: float) -> void:
@@ -56,3 +72,11 @@ func _physics_process(delta: float) -> void:
 		velocity.z = lerpf(velocity.z, 0.0, FRICTION * delta)
 
 	move_and_slide()
+
+
+func _shoot() -> void:
+	_raycast.force_raycast_update()
+	if _raycast.is_colliding():
+		var collider := _raycast.get_collider()
+		if collider.has_method(&"take_damage"):
+			collider.take_damage(DAMAGE)
