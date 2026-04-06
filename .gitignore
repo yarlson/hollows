@@ -1,0 +1,21 @@
+# Godot 4.x
+.godot/
+
+# Godot exports
+*.translation
+export_presets.cfg
+
+# Imported resources
+.import/
+
+# Mono/.NET
+.mono/
+data_*/
+mono_crash.*.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Memory vault (local only)
+.memory/
