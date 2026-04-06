@@ -10,3 +10,5 @@
 - **procedural audio** — sound effects generated at runtime from synthesized waveforms via AudioStreamWAV, eliminating external audio assets
 - **muzzle flash** — brief OmniLight3D pulse on the camera when the player fires, providing visual shooting feedback
 - **damage overlay** — brief ColorRect flash over the screen when the player takes damage
+- **wave** — a group of enemies spawned together; clearing all enemies in a wave triggers the next wave after a delay
+- **spawn point** — Marker3D node in the arena defining a position where enemies can be instantiated; shuffled per wave for variety

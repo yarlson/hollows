@@ -34,7 +34,9 @@ Player spawns in arena → wave 1 begins → enemies spawn at randomized Marker3
 - Damage overlay (ColorRect flash) on player hit
 - Procedural audio generation: shoot/hurt sounds on player, 3D spatial hit sound on enemies
 - Enemy direct-chase with `move_and_slide()` obstacle sliding
-- Signal-driven HUD (health bar, game over panel)
+- Wave-based spawning: arena preloads enemy scene, instantiates at shuffled spawn points per wave
+- Signal-driven HUD (health bar, wave info, enemy count, game over panel, victory panel)
+- Victory state: freezes player input, releases mouse, shows victory UI
 - Scene restart via `change_scene_to_file.call_deferred()`
 
 ## Tech Stack

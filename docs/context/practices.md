@@ -58,6 +58,16 @@
 - Never multiply mouse motion by delta
 - Mouse yaw on body node, pitch on head node, pitch clamped +-89 deg
 
+## Wave Spawning
+
+- Arena script owns all wave state: current wave, enemies alive count, spawn logic
+- Enemies are instantiated at runtime from a preloaded PackedScene, not placed statically in the scene
+- Spawn positions collected from Marker3D children of a SpawnPoints node, shuffled per wave
+- Enemy `died` signal connected at spawn time to decrement alive count and check wave completion
+- One-shot Timer for delay between waves; stopped on player death to prevent posthumous spawning
+- `_game_over` flag prevents victory from triggering after player death (guards simultaneous death edge case)
+- Victory freezes player by disabling `_unhandled_input` and `_physics_process`, then releases mouse
+
 ## Scene Restart
 
 - Use `get_tree().change_scene_to_file.call_deferred()` for clean restart
