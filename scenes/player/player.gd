@@ -23,11 +23,15 @@ var _can_shoot: bool = true
 @onready var _raycast: RayCast3D = $Head/Camera3D/RayCast3D
 @onready var _muzzle_flash: OmniLight3D = $Head/Camera3D/MuzzleFlash
 @onready var _damage_overlay: ColorRect = $DamageOverlay
+@onready var _shoot_sfx: AudioStreamPlayer = $ShootSFX
+@onready var _hurt_sfx: AudioStreamPlayer = $HurtSFX
 
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	_raycast.enabled = true
+	_shoot_sfx.stream = _make_noise(0.06, 4000.0, 0.4)
+	_hurt_sfx.stream = _make_noise(0.12, 800.0, 0.5)
 	health_changed.emit(_health, _max_health)
 
 
@@ -98,6 +102,7 @@ func _shoot() -> void:
 		if collider.has_method(&"take_damage"):
 			collider.take_damage(DAMAGE)
 	_flash_muzzle()
+	_shoot_sfx.play()
 	await get_tree().create_timer(FIRE_RATE).timeout
 	_can_shoot = true
 
@@ -111,9 +116,30 @@ func _flash_muzzle() -> void:
 
 func _flash_damage() -> void:
 	_damage_overlay.visible = true
+	_hurt_sfx.play()
 	await get_tree().create_timer(0.15).timeout
 	if is_instance_valid(self):
 		_damage_overlay.visible = false
+
+
+func _make_noise(duration: float, freq: float, vol: float) -> AudioStreamWAV:
+	var sample_rate := 22050
+	var samples := int(duration * sample_rate)
+	var data := PackedByteArray()
+	data.resize(samples * 2)
+	for i in samples:
+		var t := float(i) / sample_rate
+		var envelope := 1.0 - (t / duration)
+		var sample := sin(t * freq * TAU) * 0.5 + (randf() - 0.5)
+		sample *= envelope * vol
+		var value := int(clampf(sample, -1.0, 1.0) * 32767.0)
+		data[i * 2] = value & 0xFF
+		data[i * 2 + 1] = (value >> 8) & 0xFF
+	var stream := AudioStreamWAV.new()
+	stream.data = data
+	stream.mix_rate = sample_rate
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	return stream
 
 
 func _die() -> void:

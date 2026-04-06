@@ -17,11 +17,13 @@ var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var _mesh: MeshInstance3D = $MeshInstance3D
 @onready var _attack_timer: Timer = $AttackTimer
+@onready var _hit_sfx: AudioStreamPlayer3D = $HitSFX
 
 
 func _ready() -> void:
 	_attack_timer.timeout.connect(_on_attack_timer_timeout)
 	_mesh.set_surface_override_material(0, _mesh.get_surface_override_material(0).duplicate())
+	_hit_sfx.stream = _make_hit_sound()
 
 
 func _physics_process(delta: float) -> void:
@@ -142,9 +144,31 @@ func _on_attack_timer_timeout() -> void:
 func _flash_hit() -> void:
 	var mat: StandardMaterial3D = _mesh.get_surface_override_material(0)
 	mat.albedo_color = Color.WHITE
+	_hit_sfx.play()
 	await get_tree().create_timer(0.1).timeout
 	if is_instance_valid(self) and _state != State.DEAD:
 		mat.albedo_color = Color(0.4, 0.0, 0.0)
+
+
+func _make_hit_sound() -> AudioStreamWAV:
+	var sample_rate := 22050
+	var duration := 0.08
+	var samples := int(duration * sample_rate)
+	var data := PackedByteArray()
+	data.resize(samples * 2)
+	for i in samples:
+		var t := float(i) / sample_rate
+		var envelope := 1.0 - (t / duration)
+		var freq := 1200.0 - t * 8000.0
+		var sample := sin(t * freq * TAU) * envelope * 0.5
+		var value := int(clampf(sample, -1.0, 1.0) * 32767.0)
+		data[i * 2] = value & 0xFF
+		data[i * 2 + 1] = (value >> 8) & 0xFF
+	var stream := AudioStreamWAV.new()
+	stream.data = data
+	stream.mix_rate = sample_rate
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	return stream
 
 
 func _die() -> void:

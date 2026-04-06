@@ -41,3 +41,9 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(1, 0, 0, 0.25)
+
+[node name="ShootSFX" type="AudioStreamPlayer" parent="."]
+volume_db = -6.0
+
+[node name="HurtSFX" type="AudioStreamPlayer" parent="."]
+volume_db = -3.0
