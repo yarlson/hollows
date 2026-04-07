@@ -3,7 +3,9 @@
 - **call down, signal up** — parents call children's methods directly; children emit signals to communicate upward
 - **collision layer** — bitmask declaring what physics layer a body exists on
 - **collision mask** — bitmask declaring which physics layers a body detects/collides with
-- **CSG** — Constructive Solid Geometry; used for rapid level prototyping with built-in collision
+- **CSG** — Constructive Solid Geometry; used for floor, pillars, and cover objects with built-in collision
+- **GridMap** — node that places MeshLibrary items on a 3D grid; used for all labyrinth walls with cell size 0.5×4×0.5
+- **MeshLibrary** — resource containing indexed mesh items with collision shapes; `wall_library.tres` holds 6 zone-colored wall blocks
 - **screen_relative** — DPI/resolution-independent mouse motion property (Godot 4.3+)
 - **direct chase** — enemy movement toward player using flat distance + `move_and_slide()` without navmesh pathfinding
 - **line-of-sight (LOS)** — physics raycast from enemy to player against Environment layer; gates IDLE→CHASE transition so enemies cannot detect through walls

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://scenes/levels/labyrinth.gd" id="0_script"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy_brute.tscn" id="5_brute"]
 [ext_resource type="PackedScene" path="res://scenes/pickups/health_pickup.tscn" id="6_health"]
 [ext_resource type="PackedScene" path="res://scenes/pickups/key_pickup.tscn" id="7_key"]
+[ext_resource type="MeshLibrary" path="res://scenes/levels/wall_library.tres" id="8_meshlib"]
 
 [sub_resource type="StandardMaterial3D" id="DoorMaterial"]
 albedo_color = Color(0.5, 0.2, 0.1, 1)
@@ -33,9 +34,6 @@ tonemap_mode = 3
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.2, 0.2, 0.22, 1)
 
-[sub_resource type="StandardMaterial3D" id="SpawnMaterial"]
-albedo_color = Color(0.6, 0.55, 0.5, 1)
-
 [sub_resource type="StandardMaterial3D" id="SouthHallMaterial"]
 albedo_color = Color(0.5, 0.52, 0.58, 1)
 
@@ -47,9 +45,6 @@ albedo_color = Color(0.4, 0.42, 0.48, 1)
 
 [sub_resource type="StandardMaterial3D" id="KeyRoomMaterial"]
 albedo_color = Color(0.6, 0.52, 0.35, 1)
-
-[sub_resource type="StandardMaterial3D" id="ExitMaterial"]
-albedo_color = Color(0.4, 0.52, 0.42, 1)
 
 [node name="Labyrinth" type="Node3D"]
 script = ExtResource("0_script")
@@ -71,325 +66,17 @@ collision_mask = 0
 size = Vector3(36, 1, 36)
 material = SubResource("FloorMaterial")
 
-[node name="SpawnSouth" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 28)
-use_collision = true
+[node name="Walls" type="GridMap" parent="Geometry"]
+mesh_library = ExtResource("8_meshlib")
+cell_size = Vector3(0.5, 4, 0.5)
+cell_center_x = false
+cell_center_y = true
+cell_center_z = false
 collision_layer = 1
 collision_mask = 0
-size = Vector3(6.5, 3.98, 0.5)
-material = SubResource("SpawnMaterial")
-
-[node name="SpawnWest" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2, 23)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 10.5)
-material = SubResource("SpawnMaterial")
-
-[node name="SpawnEast" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2, 23)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 10.5)
-material = SubResource("SpawnMaterial")
-
-[node name="SpawnNorthL" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 2, 22)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(2.0, 3.98, 0.5)
-material = SubResource("SpawnMaterial")
-
-[node name="SpawnNorthR" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 2, 22)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(2.0, 3.98, 0.5)
-material = SubResource("SpawnMaterial")
-
-[node name="CorridorSWest" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2, 20)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 4.5)
-material = SubResource("SouthHallMaterial")
-
-[node name="CorridorSEast" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2, 20)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 4.5)
-material = SubResource("SouthHallMaterial")
-
-[node name="SHallSouthL" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 2, 18)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(7.0, 3.98, 0.5)
-material = SubResource("SouthHallMaterial")
-
-[node name="SHallSouthR" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.75, 2, 18)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(7.0, 3.98, 0.5)
-material = SubResource("SouthHallMaterial")
-
-[node name="SHallNorthL" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 2, 10)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(7.0, 3.98, 0.5)
-material = SubResource("SouthHallMaterial")
-
-[node name="SHallNorthR" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.75, 2, 10)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(7.0, 3.98, 0.5)
-material = SubResource("SouthHallMaterial")
-
-[node name="SHallWestS" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 11.125)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 2.75)
-material = SubResource("SouthHallMaterial")
-
-[node name="SHallWestN" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 16.875)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 2.75)
-material = SubResource("SouthHallMaterial")
-
-[node name="SHallEastS" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 11.125)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 2.75)
-material = SubResource("SouthHallMaterial")
-
-[node name="SHallEastN" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 16.875)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 2.75)
-material = SubResource("SouthHallMaterial")
-
-[node name="CombatWNorth" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2, 10)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(8.5, 3.98, 0.5)
-material = SubResource("CombatMaterial")
-
-[node name="CombatWSouth" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2, 18)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(8.5, 3.98, 0.5)
-material = SubResource("CombatMaterial")
-
-[node name="CombatWWest" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 2, 14)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 8.5)
-material = SubResource("CombatMaterial")
-
-[node name="CombatENorth" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2, 10)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(8.5, 3.98, 0.5)
-material = SubResource("CombatMaterial")
-
-[node name="CombatESouth" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2, 18)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(8.5, 3.98, 0.5)
-material = SubResource("CombatMaterial")
-
-[node name="CombatEEast" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 2, 14)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 8.5)
-material = SubResource("CombatMaterial")
-
-[node name="CorridorNWest" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2, 7)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 6.5)
-material = SubResource("NorthMaterial")
-
-[node name="CorridorNEast" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 2, 7)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 6.5)
-material = SubResource("NorthMaterial")
-
-[node name="NorthWall" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -4)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(32.5, 3.98, 0.5)
-material = SubResource("NorthMaterial")
-
-[node name="NHallSouthL" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 2, 4)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(7.0, 3.98, 0.5)
-material = SubResource("NorthMaterial")
-
-[node name="NHallSouthR" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.75, 2, 4)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(7.0, 3.98, 0.5)
-material = SubResource("NorthMaterial")
-
-[node name="NHallWestUpper" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, -2.375)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 3.75)
-material = SubResource("NorthMaterial")
-
-[node name="NHallWestLower" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 3.375)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 1.75)
-material = SubResource("NorthMaterial")
-
-[node name="NHallEastUpper" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, -2.875)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 2.75)
-material = SubResource("NorthMaterial")
-
-[node name="NHallEastLower" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 2.875)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 2.75)
-material = SubResource("NorthMaterial")
-
-[node name="KeyRoomSouth" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2, 4)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(8.5, 3.98, 0.5)
-material = SubResource("KeyRoomMaterial")
-
-[node name="KeyRoomEast" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 2, 0)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 8.5)
-material = SubResource("KeyRoomMaterial")
-
-[node name="NWCorrNorth" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, -0.5)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(4.5, 3.98, 0.5)
-material = SubResource("NorthMaterial")
-
-[node name="NWCorrSouth" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, 2.5)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(4.5, 3.98, 0.5)
-material = SubResource("NorthMaterial")
-
-[node name="DoorFrameUpper" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2, -2.25)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 4.0)
-material = SubResource("ExitMaterial")
-
-[node name="DoorFrameLower" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2, 3.25)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 2.0)
-material = SubResource("ExitMaterial")
-
-[node name="ExitRoomSouth" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 2, 4)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(4.5, 3.98, 0.5)
-material = SubResource("ExitMaterial")
-
-[node name="ExitRoomWest" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 2, 0)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 8.5)
-material = SubResource("ExitMaterial")
-
-[node name="PerimWest" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 2, 7)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 6.5)
-material = SubResource("CombatMaterial")
-
-[node name="PerimEast" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 2, 7)
-use_collision = true
-collision_layer = 1
-collision_mask = 0
-size = Vector3(0.5, 4, 6.5)
-material = SubResource("CombatMaterial")
+data = {
+"cells": PackedInt32Array(65504, 65528, 3, 65504, 65529, 5, 65504, 65530, 5, 65504, 65531, 5, 65504, 65532, 5, 65504, 65533, 5, 65504, 65534, 5, 65504, 65535, 5, 65504, 0, 5, 65504, 1, 5, 65504, 2, 5, 65504, 3, 5, 65504, 4, 5, 65504, 5, 5, 65504, 6, 5, 65504, 7, 5, 65504, 8, 5, 65504, 9, 2, 65504, 10, 2, 65504, 11, 2, 65504, 12, 2, 65504, 13, 2, 65504, 14, 2, 65504, 15, 2, 65504, 16, 2, 65504, 17, 2, 65504, 18, 2, 65504, 19, 2, 65504, 20, 2, 65504, 21, 2, 65504, 22, 2, 65504, 23, 2, 65504, 24, 2, 65504, 25, 2, 65504, 26, 2, 65504, 27, 2, 65504, 28, 2, 65504, 29, 2, 65504, 30, 2, 65504, 31, 2, 65504, 32, 2, 65504, 33, 2, 65504, 34, 2, 65504, 35, 2, 65504, 36, 2, 65505, 65528, 3, 65505, 8, 5, 65505, 20, 2, 65505, 36, 2, 65506, 65528, 3, 65506, 8, 5, 65506, 20, 2, 65506, 36, 2, 65507, 65528, 3, 65507, 8, 5, 65507, 20, 2, 65507, 36, 2, 65508, 65528, 3, 65508, 8, 5, 65508, 20, 2, 65508, 36, 2, 65509, 65528, 3, 65509, 8, 5, 65509, 20, 2, 65509, 36, 2, 65510, 65528, 3, 65510, 8, 5, 65510, 20, 2, 65510, 36, 2, 65511, 65528, 3, 65511, 8, 5, 65511, 20, 2, 65511, 36, 2, 65512, 65528, 3, 65512, 65529, 5, 65512, 65530, 5, 65512, 65531, 5, 65512, 65532, 5, 65512, 65533, 5, 65512, 65534, 5, 65512, 65535, 3, 65512, 5, 3, 65512, 6, 5, 65512, 7, 5, 65512, 8, 5, 65512, 20, 2, 65512, 36, 2, 65513, 65528, 3, 65513, 65535, 3, 65513, 5, 3, 65513, 20, 2, 65513, 36, 2, 65514, 65528, 3, 65514, 65535, 3, 65514, 5, 3, 65514, 20, 2, 65514, 36, 2, 65515, 65528, 3, 65515, 65535, 3, 65515, 5, 3, 65515, 20, 2, 65515, 36, 2, 65516, 65528, 3, 65516, 65535, 3, 65516, 5, 3, 65516, 20, 2, 65516, 36, 2, 65517, 65528, 3, 65517, 65535, 3, 65517, 5, 3, 65517, 20, 2, 65517, 36, 2, 65518, 65528, 3, 65518, 65535, 3, 65518, 5, 3, 65518, 20, 2, 65518, 36, 2, 65519, 65528, 3, 65519, 65535, 3, 65519, 5, 3, 65519, 20, 2, 65519, 36, 2, 65520, 65528, 3, 65520, 65529, 3, 65520, 65530, 3, 65520, 65531, 3, 65520, 65532, 3, 65520, 65533, 3, 65520, 65534, 3, 65520, 65535, 3, 65520, 5, 3, 65520, 6, 3, 65520, 7, 3, 65520, 8, 3, 65520, 20, 2, 65520, 21, 1, 65520, 22, 1, 65520, 23, 1, 65520, 24, 1, 65520, 25, 1, 65520, 31, 1, 65520, 32, 1, 65520, 33, 1, 65520, 34, 1, 65520, 35, 1, 65520, 36, 2, 65521, 65528, 3, 65521, 8, 3, 65521, 20, 1, 65521, 36, 1, 65522, 65528, 3, 65522, 8, 3, 65522, 20, 1, 65522, 36, 1, 65523, 65528, 3, 65523, 8, 3, 65523, 20, 1, 65523, 36, 1, 65524, 65528, 3, 65524, 8, 3, 65524, 20, 1, 65524, 36, 1, 65525, 65528, 3, 65525, 8, 3, 65525, 20, 1, 65525, 36, 1, 65526, 65528, 3, 65526, 8, 3, 65526, 20, 1, 65526, 36, 1, 65527, 65528, 3, 65527, 8, 3, 65527, 20, 1, 65527, 36, 1, 65528, 65528, 3, 65528, 8, 3, 65528, 20, 1, 65528, 36, 1, 65529, 65528, 3, 65529, 8, 3, 65529, 20, 1, 65529, 36, 1, 65530, 65528, 3, 65530, 8, 3, 65530, 20, 1, 65530, 36, 1, 65530, 37, 0, 65530, 38, 0, 65530, 39, 0, 65530, 40, 0, 65530, 41, 0, 65530, 42, 0, 65530, 43, 0, 65530, 44, 0, 65530, 45, 0, 65530, 46, 0, 65530, 47, 0, 65530, 48, 0, 65530, 49, 0, 65530, 50, 0, 65530, 51, 0, 65530, 52, 0, 65530, 53, 0, 65530, 54, 0, 65530, 55, 0, 65530, 56, 0, 65531, 65528, 3, 65531, 8, 3, 65531, 20, 1, 65531, 36, 1, 65531, 44, 0, 65531, 56, 0, 65532, 65528, 3, 65532, 8, 3, 65532, 20, 1, 65532, 36, 1, 65532, 44, 0, 65532, 56, 0, 65533, 65528, 3, 65533, 8, 3, 65533, 9, 3, 65533, 10, 3, 65533, 11, 3, 65533, 12, 3, 65533, 13, 3, 65533, 14, 3, 65533, 15, 3, 65533, 16, 3, 65533, 17, 3, 65533, 18, 3, 65533, 19, 3, 65533, 20, 1, 65533, 36, 1, 65533, 37, 1, 65533, 38, 1, 65533, 39, 1, 65533, 40, 1, 65533, 41, 1, 65533, 42, 1, 65533, 43, 1, 65533, 44, 0, 65533, 56, 0, 65534, 65528, 3, 65534, 56, 0, 65535, 65528, 3, 65535, 56, 0, 0, 65528, 3, 0, 56, 0, 1, 65528, 3, 1, 56, 0, 2, 65528, 3, 2, 56, 0, 3, 65528, 3, 3, 8, 3, 3, 9, 3, 3, 10, 3, 3, 11, 3, 3, 12, 3, 3, 13, 3, 3, 14, 3, 3, 15, 3, 3, 16, 3, 3, 17, 3, 3, 18, 3, 3, 19, 3, 3, 20, 1, 3, 36, 1, 3, 37, 1, 3, 38, 1, 3, 39, 1, 3, 40, 1, 3, 41, 1, 3, 42, 1, 3, 43, 1, 3, 44, 0, 3, 56, 0, 4, 65528, 3, 4, 8, 3, 4, 20, 1, 4, 36, 1, 4, 44, 0, 4, 56, 0, 5, 65528, 3, 5, 8, 3, 5, 20, 1, 5, 36, 1, 5, 44, 0, 5, 56, 0, 6, 65528, 3, 6, 8, 3, 6, 20, 1, 6, 36, 1, 6, 37, 0, 6, 38, 0, 6, 39, 0, 6, 40, 0, 6, 41, 0, 6, 42, 0, 6, 43, 0, 6, 44, 0, 6, 45, 0, 6, 46, 0, 6, 47, 0, 6, 48, 0, 6, 49, 0, 6, 50, 0, 6, 51, 0, 6, 52, 0, 6, 53, 0, 6, 54, 0, 6, 55, 0, 6, 56, 0, 7, 65528, 3, 7, 8, 3, 7, 20, 1, 7, 36, 1, 8, 65528, 3, 8, 8, 3, 8, 20, 1, 8, 36, 1, 9, 65528, 3, 9, 8, 3, 9, 20, 1, 9, 36, 1, 10, 65528, 3, 10, 8, 3, 10, 20, 1, 10, 36, 1, 11, 65528, 3, 11, 8, 3, 11, 20, 1, 11, 36, 1, 12, 65528, 3, 12, 8, 3, 12, 20, 1, 12, 36, 1, 13, 65528, 3, 13, 8, 3, 13, 20, 1, 13, 36, 1, 14, 65528, 3, 14, 8, 3, 14, 20, 1, 14, 36, 1, 15, 65528, 3, 15, 8, 3, 15, 20, 1, 15, 36, 1, 16, 65528, 3, 16, 65529, 3, 16, 65530, 3, 16, 65531, 3, 16, 65532, 3, 16, 65533, 3, 16, 3, 3, 16, 4, 3, 16, 5, 3, 16, 6, 3, 16, 7, 3, 16, 8, 4, 16, 20, 2, 16, 21, 1, 16, 22, 1, 16, 23, 1, 16, 24, 1, 16, 25, 1, 16, 31, 1, 16, 32, 1, 16, 33, 1, 16, 34, 1, 16, 35, 1, 16, 36, 2, 17, 65528, 3, 17, 8, 4, 17, 20, 2, 17, 36, 2, 18, 65528, 3, 18, 8, 4, 18, 20, 2, 18, 36, 2, 19, 65528, 3, 19, 8, 4, 19, 20, 2, 19, 36, 2, 20, 65528, 3, 20, 8, 4, 20, 20, 2, 20, 36, 2, 21, 65528, 3, 21, 8, 4, 21, 20, 2, 21, 36, 2, 22, 65528, 3, 22, 8, 4, 22, 20, 2, 22, 36, 2, 23, 65528, 3, 23, 8, 4, 23, 20, 2, 23, 36, 2, 24, 65528, 3, 24, 8, 4, 24, 20, 2, 24, 36, 2, 25, 65528, 3, 25, 8, 4, 25, 20, 2, 25, 36, 2, 26, 65528, 3, 26, 8, 4, 26, 20, 2, 26, 36, 2, 27, 65528, 3, 27, 8, 4, 27, 20, 2, 27, 36, 2, 28, 65528, 3, 28, 8, 4, 28, 20, 2, 28, 36, 2, 29, 65528, 3, 29, 8, 4, 29, 20, 2, 29, 36, 2, 30, 65528, 3, 30, 8, 4, 30, 20, 2, 30, 36, 2, 31, 65528, 3, 31, 8, 4, 31, 20, 2, 31, 36, 2, 32, 65528, 3, 32, 65529, 4, 32, 65530, 4, 32, 65531, 4, 32, 65532, 4, 32, 65533, 4, 32, 65534, 4, 32, 65535, 4, 32, 0, 4, 32, 1, 4, 32, 2, 4, 32, 3, 4, 32, 4, 4, 32, 5, 4, 32, 6, 4, 32, 7, 4, 32, 8, 4, 32, 9, 2, 32, 10, 2, 32, 11, 2, 32, 12, 2, 32, 13, 2, 32, 14, 2, 32, 15, 2, 32, 16, 2, 32, 17, 2, 32, 18, 2, 32, 19, 2, 32, 20, 2, 32, 21, 2, 32, 22, 2, 32, 23, 2, 32, 24, 2, 32, 25, 2, 32, 26, 2, 32, 27, 2, 32, 28, 2, 32, 29, 2, 32, 30, 2, 32, 31, 2, 32, 32, 2, 32, 33, 2, 32, 34, 2, 32, 35, 2, 32, 36, 2)
+}
 
 [node name="SouthHallPillar" type="CSGBox3D" parent="Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 14)

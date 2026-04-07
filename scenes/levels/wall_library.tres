@@ -1,0 +1,78 @@
+[gd_resource type="MeshLibrary" format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_spawn"]
+albedo_color = Color(0.6, 0.55, 0.5, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_south_hall"]
+albedo_color = Color(0.5, 0.52, 0.58, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_combat"]
+albedo_color = Color(0.55, 0.45, 0.38, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_north"]
+albedo_color = Color(0.4, 0.42, 0.48, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_key_room"]
+albedo_color = Color(0.6, 0.52, 0.35, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_exit"]
+albedo_color = Color(0.4, 0.52, 0.42, 1)
+
+[sub_resource type="BoxMesh" id="mesh_0"]
+size = Vector3(0.5, 4.0, 0.5)
+material = SubResource("mat_spawn")
+
+[sub_resource type="BoxMesh" id="mesh_1"]
+size = Vector3(0.5, 4.0, 0.5)
+material = SubResource("mat_south_hall")
+
+[sub_resource type="BoxMesh" id="mesh_2"]
+size = Vector3(0.5, 4.0, 0.5)
+material = SubResource("mat_combat")
+
+[sub_resource type="BoxMesh" id="mesh_3"]
+size = Vector3(0.5, 4.0, 0.5)
+material = SubResource("mat_north")
+
+[sub_resource type="BoxMesh" id="mesh_4"]
+size = Vector3(0.5, 4.0, 0.5)
+material = SubResource("mat_key_room")
+
+[sub_resource type="BoxMesh" id="mesh_5"]
+size = Vector3(0.5, 4.0, 0.5)
+material = SubResource("mat_exit")
+
+[sub_resource type="BoxShape3D" id="shape_0"]
+size = Vector3(0.5, 4.0, 0.5)
+
+[resource]
+item/0/name = &"wall_spawn"
+item/0/mesh = SubResource("mesh_0")
+item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/shapes = [SubResource("shape_0"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)]
+item/0/navigation_layers = 0
+item/1/name = &"wall_south_hall"
+item/1/mesh = SubResource("mesh_1")
+item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/shapes = [SubResource("shape_0"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)]
+item/1/navigation_layers = 0
+item/2/name = &"wall_combat"
+item/2/mesh = SubResource("mesh_2")
+item/2/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/shapes = [SubResource("shape_0"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)]
+item/2/navigation_layers = 0
+item/3/name = &"wall_north"
+item/3/mesh = SubResource("mesh_3")
+item/3/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/3/shapes = [SubResource("shape_0"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)]
+item/3/navigation_layers = 0
+item/4/name = &"wall_key_room"
+item/4/mesh = SubResource("mesh_4")
+item/4/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/4/shapes = [SubResource("shape_0"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)]
+item/4/navigation_layers = 0
+item/5/name = &"wall_exit"
+item/5/mesh = SubResource("mesh_5")
+item/5/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/5/shapes = [SubResource("shape_0"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)]
+item/5/navigation_layers = 0

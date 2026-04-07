@@ -82,18 +82,20 @@
 - Camera kick: each shot applies a small upward pitch impulse to the head node; smooth recovery in `_physics_process` at a fixed angular rate, clamped to pitch limits; fully recovers so aim is never permanently offset
 - Head bob: sine-based vertical oscillation on head node `position.y` while moving on floor; resets smoothly when stationary or airborne; base Y cached from scene transform in `_ready()`
 
-## CSG Wall Joint Rule
+## GridMap Wall System
 
-- N-S walls (thin in X) act as "through" walls at their original length
-- E-W walls (thin in Z) extend 0.25 past each connecting N-S wall to its outer face, filling the corner square
-- The overlap is hidden inside the N-S wall's solid body; only top/bottom faces overlap (invisible from player height)
-- Prevents visible gaps at corners and T-junctions without z-fighting on side faces
+- Walls use GridMap with a MeshLibrary (`wall_library.tres`) instead of individual CSG nodes
+- Cell size: 0.5 x 4 x 0.5 (each cell is one wall block, 0.5m thick, 4m tall)
+- `cell_center_x = false`, `cell_center_y = true`, `cell_center_z = false` — cell index maps directly to world position (x = i _ 0.5, z = k _ 0.5)
+- 6 MeshLibrary items (one per zone color): wall_spawn(0), wall_south_hall(1), wall_combat(2), wall_north(3), wall_key_room(4), wall_exit(5)
+- GridMap collision_layer = 1 (Environment), collision_mask = 0
+- Pillars, cover objects, and floor remain as individual CSG nodes (non-wall geometry)
 
 ## Physics Rules
 
 - Moving bodies use only convex shapes (CapsuleShape3D, BoxShape3D, SphereShape3D)
 - Never ConcavePolygonShape3D on moving bodies
-- CSG with `use_collision = true` and `collision_mask = 0` for static environment
+- GridMap with collision for static wall geometry; CSG with `use_collision = true` and `collision_mask = 0` for non-wall static objects (floor, pillars, cover)
 - Never multiply mouse motion by delta
 - Mouse yaw on body node, pitch on head node, pitch clamped +-89 deg
 

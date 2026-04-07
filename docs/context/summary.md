@@ -19,7 +19,7 @@ Player spawns in labyrinth → explores rooms and corridors → fights placed en
 ## System State
 
 - Player: movement, mouse-look, jump, rate-limited hitscan shooting with muzzle flash, damage overlay on hit, hit confirmation signal, healing via pickups, death
-- Labyrinth: CSG-based multi-room level with corridors, chokepoints, and obstacles; zone-colored materials (spawn warm gray, south halls blue-gray, combat rooms clay, north areas cool dark, key room gold, exit area green) with accent OmniLight3D in key room and exit; rooms include spawn room, south hall, two combat rooms, north hall, key room, NW corridor, and exit room
+- Labyrinth: GridMap-based multi-room level with corridors, chokepoints, and obstacles; walls built from a MeshLibrary with zone-colored materials (spawn warm gray, south halls blue-gray, combat rooms clay, north areas cool dark, key room gold, exit area green) with accent OmniLight3D in key room and exit; rooms include spawn room, south hall, two combat rooms, north hall, key room, NW corridor, and exit room; floor, pillars, and cover objects remain as CSG
 - Enemies: 7 placed instances — 4 standard (2 in combat west, 1 in combat east, 1 in north hall), 2 runners (one in combat east, one near north hall pillar), 1 brute in key room (with extended LOS memory); all use line-of-sight-gated direct-chase AI with configurable LOS memory duration, distance-based attack, telegraphed melee with lunge, hit stagger, tween death effect, 3D spatial hit and alert sounds
 - HUD: color-coded health bar (green/yellow/red by HP percentage), crosshair with hitmarker flash, damage direction indicators, kills counter, key status label with gold flash on collection ("KEY: ---" / "KEY: FOUND"), game over panel (kills + time), victory panel (kills + time)
 - Health pickups: 3 green emissive spheres placed in the level; persist until collected; Area3D with duck-typed `heal()` on player contact; procedural pickup chime on collection
@@ -55,7 +55,7 @@ Player spawns in labyrinth → explores rooms and corridors → fights placed en
 
 - Godot 4.6.1 (Forward+ renderer)
 - GDScript with mandatory static typing
-- CSG primitives for level geometry
+- GridMap with MeshLibrary for wall geometry; CSG for floor, pillars, and cover objects
 - `gdformat` / `gdlint` for code formatting and linting
 - Design resolution 1280x720 with `canvas_items` stretch mode
 - No external assets or plugins
