@@ -11,7 +11,7 @@
 - **line-of-sight (LOS)** — physics raycast from enemy to player against Environment layer; gates IDLE→CHASE transition so enemies cannot detect through walls
 - **LOS memory** — duration an enemy continues chasing after losing line of sight; configurable per variant via `los_memory_duration` export; prevents enemies from instantly forgetting the player around corners
 - **zone material** — StandardMaterial3D with distinct dark albedo color assigned to level geometry by area (spawn, south halls, combat rooms, north, key room, exit); dark palette (0.18-0.30) for horror atmosphere while remaining visible under direct light
-- **flashlight** — SpotLight3D on the player's Camera3D providing the primary visibility cone; horror-style directed illumination where the player can only see what they aim at
+- **flashlight** — SpotLight3D on the player's Camera3D; off by default, toggled with `flashlight` input action (F key); provides directed visibility cone for horror exploration
 - **alert sound** — 3D spatial procedural growl played by an enemy when it first spots the player (IDLE→CHASE); provides audio feedback of enemy detection
 - **ambient drone** — looping low-frequency procedural tone played by the level script for atmospheric presence
 - **canvas_items stretch** — Godot display mode that scales 2D/UI from a design resolution to actual window size
@@ -30,6 +30,6 @@
 - **head bob** — sine-based vertical oscillation of the head node while the player moves on the ground; provides grounded movement feel
 - **labyrinth** — the interconnected multi-room level layout; rooms connected by corridors with chokepoints and landmarks
 - **placed enemy** — an enemy instance positioned directly in the level scene at a fixed location, as opposed to dynamically spawned
-- **key pickup** — gold emissive rotating Area3D cube that emits `picked_up` signal on player contact; collecting it unlocks the exit door
+- **key pickup** — gold emissive rotating Area3D key shape (CSGCylinder3D bow + CSGBox3D shaft and teeth) that emits `picked_up` signal on player contact; collecting it unlocks the exit door
 - **door** — StaticBody3D on the Environment layer blocking the exit corridor; collision disabled on key collection, then tweened upward with rumble sound before `queue_free()`
 - **exit trigger** — Area3D placed behind the locked door; entering it with the key triggers victory

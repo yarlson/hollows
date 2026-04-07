@@ -18,11 +18,12 @@ Player spawns in labyrinth → explores rooms and corridors using flashlight →
 
 ## System State
 
-- Player: movement, mouse-look, jump, rate-limited hitscan shooting with muzzle flash, camera-mounted SpotLight3D flashlight, damage overlay on hit, hit confirmation signal, healing via pickups, death
+- Player: movement, mouse-look, jump, rate-limited hitscan shooting with muzzle flash, toggleable SpotLight3D flashlight (F key, off by default), damage overlay on hit, hit confirmation signal, healing via pickups, death
 - Labyrinth: GridMap-based multi-room level with ceiling, corridors, chokepoints, and obstacles; walls built from a MeshLibrary with dark zone-colored materials; enclosed with dark ceiling at Y=4; horror atmosphere with volumetric fog, SSAO, glow, desaturated color grading; 10 ceiling-mounted SpotLight3D lamps aimed downward with emissive fixture meshes (all shadow-casting); rooms include spawn room, south hall, two combat rooms, north hall, key room, NW corridor, and exit room; floor, pillars, and cover objects remain as CSG
 - Enemies: 7 placed instances — 4 standard, 2 runners, 1 brute in key room; line-of-sight-gated direct-chase AI, telegraphed melee, hit stagger, tween death effect, 3D spatial sounds
 - HUD: color-coded health bar, crosshair with hitmarker, damage direction indicators, kills counter, key status, game over/victory panels
 - Health pickups: 3 placed in level; Area3D with duck-typed `heal()` on player contact
+- Key pickup: gold emissive rotating key shape (bow + shaft + teeth) in key room; Area3D emits `picked_up` signal
 - Key/door/exit progression: key pickup → door opens → exit trigger → victory
 - Audio: all sounds procedurally generated at runtime via AudioStreamWAV
 - Game loop: explore → fight → find key → door opens → reach exit → victory or death → restart
@@ -30,7 +31,7 @@ Player spawns in labyrinth → explores rooms and corridors using flashlight →
 ## Capabilities
 
 - CharacterBody3D player with lerp-based acceleration/friction and sine-based head bob
-- SpotLight3D flashlight on camera (energy 8, range 25, angle 35) for horror visibility
+- SpotLight3D flashlight on camera (off by default, F to toggle) for horror visibility
 - Mouse-look using `screen_relative`, yaw/pitch separated, pitch clamped +-89 deg
 - RayCast3D hitscan shooting with duck-typed damage, fire rate cooldown, muzzle flash, camera kick recoil
 - Horror environment: volumetric fog, SSAO, glow bloom, desaturated color grading, debanding
