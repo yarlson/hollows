@@ -10,7 +10,8 @@
 - **direct chase** — enemy movement toward player using flat distance + `move_and_slide()` without navmesh pathfinding
 - **line-of-sight (LOS)** — physics raycast from enemy to player against Environment layer; gates IDLE→CHASE transition so enemies cannot detect through walls
 - **LOS memory** — duration an enemy continues chasing after losing line of sight; configurable per variant via `los_memory_duration` export; prevents enemies from instantly forgetting the player around corners
-- **zone material** — StandardMaterial3D with distinct albedo color assigned to level geometry by area (spawn, south halls, combat rooms, north, key room, exit) for visual readability and spatial orientation
+- **zone material** — StandardMaterial3D with distinct dark albedo color assigned to level geometry by area (spawn, south halls, combat rooms, north, key room, exit); dark palette (0.18-0.30) for horror atmosphere while remaining visible under direct light
+- **flashlight** — SpotLight3D on the player's Camera3D providing the primary visibility cone; horror-style directed illumination where the player can only see what they aim at
 - **alert sound** — 3D spatial procedural growl played by an enemy when it first spots the player (IDLE→CHASE); provides audio feedback of enemy detection
 - **ambient drone** — looping low-frequency procedural tone played by the level script for atmospheric presence
 - **canvas_items stretch** — Godot display mode that scales 2D/UI from a design resolution to actual window size

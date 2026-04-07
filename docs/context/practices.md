@@ -91,14 +91,24 @@
 - GridMap collision_layer = 1 (Environment), collision_mask = 0
 - Pillars, cover objects, floor, and ceiling remain as individual CSG nodes (non-wall geometry)
 
-## Interior Lighting
+## Interior Lighting and Horror Atmosphere
 
-- No DirectionalLight (sunlight); enclosed labyrinth uses only OmniLight3D lamps
-- Ambient light energy set to 0.08 (minimal fill to prevent total blackness)
-- 10 ceiling-mounted lamps under a `Lamps` Node3D parent; each lamp is a Node3D with a MeshInstance3D fixture (emissive BoxMesh 0.4×0.1×0.4) and an OmniLight3D
-- Only 3 lamps cast shadows (Spawn, SouthHall, NorthHall) for performance
-- Lamp colors vary by zone: warm white for spawn, orange for combat rooms, cool blue for corridors, warm gold for key room, green for exit
+- No DirectionalLight (sunlight); enclosed labyrinth uses SpotLight3D lamps and a player flashlight
+- Ambient light: color-sourced `Color(0.06, 0.06, 0.1)` at energy 0.2 — dim cold-blue fill
+- 10 ceiling-mounted SpotLight3D lamps aimed downward under a `Lamps` Node3D parent; each lamp is a Node3D with a MeshInstance3D fixture (emissive BoxMesh 0.4×0.1×0.4) and a SpotLight3D (transform rotated so -Z points down)
+- All 10 lamps cast shadows; energy range 5-8, spot_range 8-10, spot_angle 50-55
+- Lamp colors are unsettling by zone: dying amber for spawn, blood-red for combat rooms, cold blue for corridors, warm gold for key room, eerie green for exit
+- Player has a SpotLight3D flashlight on Camera3D (energy 8, range 25, angle 35, shadow-casting)
 - Ceiling is a single CSGBox3D at Y=4.5, size 36×1×36 (bottom face flush with wall tops at Y=4), collision_layer=1
+
+## Horror Post-Processing
+
+- Volumetric fog: density 0.008, dark blue-grey albedo, anisotropy 0.6 for light shafts
+- SSAO: radius 1.5, intensity 2.0 — darkens corners and wall joints
+- Glow: intensity 0.3, bloom 0.1 — subtle light bleed
+- Color adjustment: brightness 1.0, contrast 1.1, saturation 0.6 — desaturated world
+- Debanding enabled in project settings (`rendering/anti_aliasing/quality/use_debanding`)
+- Dark material palette: wall albedo 0.18-0.30, floor 0.15, ceiling 0.10 — medium-dark surfaces that reflect light without absorbing it entirely
 
 ## Physics Rules
 
