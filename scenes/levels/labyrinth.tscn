@@ -33,6 +33,7 @@ tonemap_mode = 3
 
 [sub_resource type="StandardMaterial3D" id="FloorMaterial"]
 albedo_color = Color(0.2, 0.2, 0.22, 1)
+roughness = 0.9
 
 [sub_resource type="StandardMaterial3D" id="SouthHallMaterial"]
 albedo_color = Color(0.5, 0.52, 0.58, 1)
@@ -48,6 +49,7 @@ albedo_color = Color(0.6, 0.52, 0.35, 1)
 
 [sub_resource type="StandardMaterial3D" id="CeilingMaterial"]
 albedo_color = Color(0.15, 0.15, 0.17, 1)
+roughness = 0.95
 
 [sub_resource type="StandardMaterial3D" id="LampMaterial"]
 albedo_color = Color(0.9, 0.9, 0.8, 1)
@@ -167,6 +169,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 light_color = Color(1.0, 0.95, 0.85, 1)
 light_energy = 0.8
 shadow_enabled = true
+omni_attenuation = 2.0
 omni_range = 6.0
 
 [node name="SouthCorridorLamp" type="Node3D" parent="Lamps"]
@@ -180,6 +183,7 @@ mesh = SubResource("LampMesh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 light_color = Color(0.85, 0.9, 1.0, 1)
 light_energy = 0.5
+omni_attenuation = 2.0
 omni_range = 5.0
 
 [node name="SouthHallLamp" type="Node3D" parent="Lamps"]
@@ -194,6 +198,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 light_color = Color(0.9, 0.9, 0.9, 1)
 light_energy = 0.7
 shadow_enabled = true
+omni_attenuation = 2.0
 omni_range = 7.0
 
 [node name="CombatWestLamp" type="Node3D" parent="Lamps"]
@@ -207,6 +212,7 @@ mesh = SubResource("LampMesh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 light_color = Color(1.0, 0.8, 0.5, 1)
 light_energy = 0.7
+omni_attenuation = 2.0
 omni_range = 7.0
 
 [node name="CombatEastLamp" type="Node3D" parent="Lamps"]
@@ -220,6 +226,7 @@ mesh = SubResource("LampMesh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 light_color = Color(1.0, 0.8, 0.5, 1)
 light_energy = 0.7
+omni_attenuation = 2.0
 omni_range = 7.0
 
 [node name="NorthCorridorLamp" type="Node3D" parent="Lamps"]
@@ -233,6 +240,7 @@ mesh = SubResource("LampMesh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 light_color = Color(0.7, 0.8, 1.0, 1)
 light_energy = 0.4
+omni_attenuation = 2.0
 omni_range = 5.0
 
 [node name="NorthHallLamp" type="Node3D" parent="Lamps"]
@@ -247,6 +255,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 light_color = Color(0.8, 0.85, 0.95, 1)
 light_energy = 0.6
 shadow_enabled = true
+omni_attenuation = 2.0
 omni_range = 7.0
 
 [node name="NWCorridorLamp" type="Node3D" parent="Lamps"]
@@ -260,6 +269,7 @@ mesh = SubResource("LampMesh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 light_color = Color(0.9, 0.85, 0.7, 1)
 light_energy = 0.4
+omni_attenuation = 2.0
 omni_range = 5.0
 
 [node name="KeyRoomLamp" type="Node3D" parent="Lamps"]
@@ -273,6 +283,7 @@ mesh = SubResource("LampMesh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 light_color = Color(1.0, 0.9, 0.6, 1)
 light_energy = 0.6
+omni_attenuation = 2.0
 omni_range = 8.0
 
 [node name="ExitLamp" type="Node3D" parent="Lamps"]
@@ -286,6 +297,7 @@ mesh = SubResource("ExitLampMesh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
 light_color = Color(0.6, 1.0, 0.7, 1)
 light_energy = 0.6
+omni_attenuation = 2.0
 omni_range = 8.0
 
 [node name="Enemies" type="Node3D" parent="."]

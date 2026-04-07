@@ -1,21 +1,27 @@
 [gd_resource type="MeshLibrary" format=3]
 
 [sub_resource type="StandardMaterial3D" id="mat_spawn"]
+roughness = 0.85
 albedo_color = Color(0.6, 0.55, 0.5, 1)
 
 [sub_resource type="StandardMaterial3D" id="mat_south_hall"]
+roughness = 0.85
 albedo_color = Color(0.5, 0.52, 0.58, 1)
 
 [sub_resource type="StandardMaterial3D" id="mat_combat"]
+roughness = 0.85
 albedo_color = Color(0.55, 0.45, 0.38, 1)
 
 [sub_resource type="StandardMaterial3D" id="mat_north"]
+roughness = 0.85
 albedo_color = Color(0.4, 0.42, 0.48, 1)
 
 [sub_resource type="StandardMaterial3D" id="mat_key_room"]
+roughness = 0.85
 albedo_color = Color(0.6, 0.52, 0.35, 1)
 
 [sub_resource type="StandardMaterial3D" id="mat_exit"]
+roughness = 0.85
 albedo_color = Color(0.4, 0.52, 0.42, 1)
 
 [sub_resource type="BoxMesh" id="mesh_0"]

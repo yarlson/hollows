@@ -61,6 +61,10 @@ shoot={
 3d_physics/layer_3="Enemies"
 3d_physics/layer_4="Projectiles"
 
+[rendering]
+
+anti_aliasing/quality/use_debanding=true
+
 [physics]
 
 common/physics_interpolation=true
