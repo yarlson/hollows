@@ -25,6 +25,7 @@ var _bob_time: float = 0.0
 var _head_base_y: float = 0.0
 
 @onready var _head: Node3D = $Head
+@onready var _flashlight: SpotLight3D = $Head/Camera3D/Flashlight
 @onready var _raycast: RayCast3D = $Head/Camera3D/RayCast3D
 @onready var _muzzle_flash: OmniLight3D = $Head/Camera3D/MuzzleFlash
 @onready var _damage_overlay: ColorRect = $DamageOverlay
@@ -59,6 +60,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotate_y(-deg_to_rad(motion.x))
 		_head.rotate_x(-deg_to_rad(motion.y))
 		_head.rotation.x = clampf(_head.rotation.x, deg_to_rad(-89.0), deg_to_rad(89.0))
+
+	if event.is_action_pressed(&"flashlight"):
+		_flashlight.visible = not _flashlight.visible
 
 	if event.is_action_pressed(&"shoot"):
 		_shoot()

@@ -19,7 +19,24 @@ script = ExtResource("1_script")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_1")
 
-[node name="Mesh" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
-size = Vector3(0.4, 0.4, 0.4)
+[node name="Bow" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.15)
+radius = 0.1
+height = 0.05
+sides = 16
+material = SubResource("StandardMaterial3D_1")
+
+[node name="Shaft" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0.1)
+size = Vector3(0.05, 0.05, 0.35)
+material = SubResource("StandardMaterial3D_1")
+
+[node name="Tooth1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.04, 0.3, 0.25)
+size = Vector3(0.04, 0.05, 0.05)
+material = SubResource("StandardMaterial3D_1")
+
+[node name="Tooth2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.04, 0.3, 0.18)
+size = Vector3(0.03, 0.05, 0.04)
 material = SubResource("StandardMaterial3D_1")
