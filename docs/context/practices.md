@@ -118,20 +118,30 @@
 - Never multiply mouse motion by delta
 - Mouse yaw on body node, pitch on head node, pitch clamped +-89 deg
 
-## Level Management
+## Game Shell (game.gd / game.tscn)
 
-- Level script (`labyrinth.gd`) owns game state: `_game_over`, `_kills`, `_elapsed_time`
-- Player added to `&"player"` group in `_ready()` so enemies can find it
-- Player signals (`health_changed`, `hit_landed`, `damage_taken_from`, `died`) wired to HUD in `_ready()`
-- Enemies placed as child instances under an `Enemies` container node; level script iterates children and connects each `died` signal via `_wire_enemies()`
-- Health pickups placed as child instances under a `Pickups` container node; no signal wiring needed (self-contained via duck-typed `heal()`)
-- Key pickup `picked_up` signal connected to level script; sets `_has_key`, flashes HUD key status gold, plays key chime, disables door collision, tweens door upward with rumble sound, then `queue_free()` door on tween completion
-- Exit trigger `body_entered` signal connected to level script; checks player group + `_has_key` + not `_game_over` before triggering victory
-- Game over on player death; victory on reaching exit with key; `_game_over` flag prevents duplicate end states and stops elapsed time counter
-- Victory freezes player by disabling `_unhandled_input` and `_physics_process`, then releases mouse
-- HUD `restart_requested` signal triggers `change_scene_to_file.call_deferred()`
+- `game.tscn` is the main scene; contains Player, HUD, and a `LevelContainer` Node3D slot
+- `game.gd` owns run-global state: `_kills`, `_elapsed_time`, `_game_over`, `_current_level_index`
+- Player added to `&"player"` group in `game.gd._ready()` so enemies can find it
+- Player↔HUD signal wiring (health_changed, hit_landed, damage_taken_from, died) done once in `game.gd._ready()`
+- `LEVELS` const array defines ordered level file paths
+- `_load_level(index)` frees previous level, instances next into `LevelContainer`, calls `_wire_level()`
+- `_wire_level()` connects enemy `died` signals, level `level_completed` signal, and calls `level.setup(player, hud)`
+- On `level_completed`: advances to next level or calls `_finish_game()` for final victory
+- On player `died`: shows game over panel
+- HUD `restart_requested` reloads entire `game.tscn` via `change_scene_to_file.call_deferred()`
+
+## Level Scripts (per-level, e.g. labyrinth.gd)
+
+- Each level script owns level-local state: `_has_key`, `_completed`, ambient audio, key/door references
+- `setup(player, hud)` receives persistent refs from game shell for HUD updates (key status)
+- Key pickup `picked_up` signal → sets `_has_key`, flashes HUD key status, plays chime, opens door
+- Exit trigger `body_entered` → checks player group + `_has_key` + not `_completed` → emits `level_completed`
+- Each level has a `SpawnPoint` (Marker3D) used by game shell to position the player
+- Enemies placed under `Enemies` container; health pickups under `Pickups` container
+- Level owns its own WorldEnvironment, geometry, lamps, and ambient drone
 
 ## Scene Restart
 
-- Use `get_tree().change_scene_to_file.call_deferred()` for clean restart
+- Use `get_tree().change_scene_to_file.call_deferred()` for clean restart — reloads entire game shell
 - Never call scene change from within a signal handler without deferring

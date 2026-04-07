@@ -9,12 +9,15 @@ First-person shooter prototype built in Godot 4.6 with GDScript. A horror-themed
 - "Call down, signal up" for node communication
 - Duck-typed damage interface via `has_method(&"take_damage")`
 - Inline enum state machine for enemy AI (IDLE/CHASE/ATTACK/DEAD)
-- Level script (`labyrinth.gd`) owns game state, wires signals between player, enemies, and HUD
-- Enemies placed as static scene instances in the level, not dynamically spawned
+- **Two-tier scene hierarchy:** persistent `game.tscn` shell (Player, HUD, run state) wraps swappable level scenes
+- `game.gd` owns run state (`_kills`, `_elapsed_time`, `_game_over`), wires Player↔HUD signals, loads levels into `LevelContainer`
+- Level scripts own level-local state (key, door, ambient audio) and emit `level_completed` signal; receive Player/HUD refs via `setup()`
+- `LEVELS` array in `game.gd` defines the ordered level sequence; game advances or shows final victory based on index
+- Enemies placed as static scene instances in each level, not dynamically spawned
 
 ## Core Flow
 
-Player spawns in labyrinth → explores rooms and corridors using flashlight → fights placed enemies → finds key pickup (guarded by brute) → door slides open → reaches exit trigger → victory. Death at any point triggers game over. Restart reloads the level scene via `change_scene_to_file`.
+Player spawns in level (positioned at SpawnPoint Marker3D) → explores rooms and corridors using flashlight → fights placed enemies → finds key pickup → door slides open → reaches exit trigger → level emits `level_completed` → game shell advances to next level or shows final victory. Death at any point triggers game over. Restart reloads the entire game shell via `change_scene_to_file`.
 
 ## System State
 
