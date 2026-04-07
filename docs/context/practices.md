@@ -21,7 +21,7 @@
 - One script per scene root, named to match the scene
 - Co-locate scene + script in the same directory
 - Scenes organized under `scenes/<entity>/`
-- No autoloads; signal wiring done by the level scene script (`labyrinth.gd`)
+- No autoloads; signal wiring done by the level scene script (`level_1.gd`)
 
 ## Damage and Healing Pattern
 
@@ -131,7 +131,7 @@
 - On player `died`: shows game over panel
 - HUD `restart_requested` reloads entire `game.tscn` via `change_scene_to_file.call_deferred()`
 
-## Level Scripts (per-level, e.g. labyrinth.gd)
+## Level Scripts (per-level, e.g. level_1.gd)
 
 - Each level script owns level-local state: `_has_key`, `_completed`, ambient audio, key/door references
 - `setup(player, hud)` receives persistent refs from game shell for HUD updates (key status)

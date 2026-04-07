@@ -1,7 +1,7 @@
 extends Node3D
 
 const LEVELS: Array[String] = [
-	"res://scenes/levels/labyrinth.tscn",
+	"res://scenes/levels/level_1.tscn",
 	"res://scenes/levels/level_2.tscn",
 ]
 const FADE_DURATION: float = 0.4
