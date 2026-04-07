@@ -89,7 +89,16 @@
 - `cell_center_x = false`, `cell_center_y = true`, `cell_center_z = false` — cell index maps directly to world position (x = i _ 0.5, z = k _ 0.5)
 - 6 MeshLibrary items (one per zone color): wall_spawn(0), wall_south_hall(1), wall_combat(2), wall_north(3), wall_key_room(4), wall_exit(5)
 - GridMap collision_layer = 1 (Environment), collision_mask = 0
-- Pillars, cover objects, and floor remain as individual CSG nodes (non-wall geometry)
+- Pillars, cover objects, floor, and ceiling remain as individual CSG nodes (non-wall geometry)
+
+## Interior Lighting
+
+- No DirectionalLight (sunlight); enclosed labyrinth uses only OmniLight3D lamps
+- Ambient light energy set to 0.08 (minimal fill to prevent total blackness)
+- 10 ceiling-mounted lamps under a `Lamps` Node3D parent; each lamp is a Node3D with a MeshInstance3D fixture (emissive BoxMesh 0.4×0.1×0.4) and an OmniLight3D
+- Only 3 lamps cast shadows (Spawn, SouthHall, NorthHall) for performance
+- Lamp colors vary by zone: warm white for spawn, orange for combat rooms, cool blue for corridors, warm gold for key room, green for exit
+- Ceiling is a single CSGBox3D at Y=4.5, size 36×1×36 (bottom face flush with wall tops at Y=4), collision_layer=1
 
 ## Physics Rules
 
