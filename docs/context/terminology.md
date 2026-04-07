@@ -1,35 +1,38 @@
+- **game shell** — persistent `game.tscn` scene that owns Player, HUD, run state, and fade overlay; survives level transitions
+- **level contract** — required nodes and signals a level scene must provide: SpawnPoint, Enemies, KeyPickup, Door, ExitTrigger, `setup()` method, `level_completed` signal
+- **level transition** — fade-to-black sequence that swaps level content while preserving player/HUD state; managed by `game.gd._transition_to_next_level()`
+- **run state** — game-wide persistent state (kills, elapsed time, game_over, level index) owned by `game.gd`; survives level transitions, resets on restart
 - **hitscan** — instant-hit weapon using RayCast3D; no projectile travel time
 - **duck-typed damage** — any node implementing `take_damage(amount: int)` is damageable; no base class required
 - **call down, signal up** — parents call children's methods directly; children emit signals to communicate upward
 - **collision layer** — bitmask declaring what physics layer a body exists on
 - **collision mask** — bitmask declaring which physics layers a body detects/collides with
-- **CSG** — Constructive Solid Geometry; used for floor, pillars, and cover objects with built-in collision
-- **GridMap** — node that places MeshLibrary items on a 3D grid; used for all labyrinth walls with cell size 0.5×4×0.5
+- **CSG** — Constructive Solid Geometry; used for floor, pillars, cover objects, doors, and ceilings with built-in collision
+- **GridMap** — node that places MeshLibrary items on a 3D grid; used for all level walls with cell size 0.5x4x0.5
 - **MeshLibrary** — resource containing indexed mesh items with collision shapes; `wall_library.tres` holds 6 zone-colored wall blocks
 - **screen_relative** — DPI/resolution-independent mouse motion property (Godot 4.3+)
 - **direct chase** — enemy movement toward player using flat distance + `move_and_slide()` without navmesh pathfinding
-- **line-of-sight (LOS)** — physics raycast from enemy to player against Environment layer; gates IDLE→CHASE transition so enemies cannot detect through walls
-- **LOS memory** — duration an enemy continues chasing after losing line of sight; configurable per variant via `los_memory_duration` export; prevents enemies from instantly forgetting the player around corners
-- **zone material** — StandardMaterial3D with distinct dark albedo color assigned to level geometry by area (spawn, south halls, combat rooms, north, key room, exit); dark palette (0.18-0.30) for horror atmosphere while remaining visible under direct light
-- **flashlight** — SpotLight3D on the player's Camera3D; off by default, toggled with `flashlight` input action (F key); provides directed visibility cone for horror exploration
-- **alert sound** — 3D spatial procedural growl played by an enemy when it first spots the player (IDLE→CHASE); provides audio feedback of enemy detection
-- **ambient drone** — looping low-frequency procedural tone played by the level script for atmospheric presence
-- **canvas_items stretch** — Godot display mode that scales 2D/UI from a design resolution to actual window size
-- **procedural audio** — sound effects generated at runtime from synthesized waveforms via AudioStreamWAV, eliminating external audio assets
-- **muzzle flash** — brief OmniLight3D pulse on the camera when the player fires, providing visual shooting feedback
+- **line-of-sight (LOS)** — physics raycast from enemy to player against Environment layer; gates IDLE-CHASE transition so enemies cannot detect through walls
+- **LOS memory** — duration an enemy continues chasing after losing line of sight; configurable per variant via `los_memory_duration` export
+- **zone material** — StandardMaterial3D with distinct dark albedo color assigned to level geometry by area; dark palette for horror atmosphere
+- **flashlight** — SpotLight3D on the player's Camera3D; off by default, toggled with F key; primary visibility tool
+- **alert sound** — 3D spatial procedural growl played by an enemy on IDLE-CHASE transition
+- **ambient drone** — looping low-frequency procedural tone played by level script; pitch varies per level for distinct atmosphere
+- **procedural audio** — sound effects generated at runtime from synthesized waveforms via AudioStreamWAV; no external audio assets
+- **muzzle flash** — brief OmniLight3D pulse on the camera when the player fires
 - **damage overlay** — brief ColorRect flash over the screen when the player takes damage
 - **hitmarker** — brief white flash on the crosshair confirming a shot hit a damageable target
-- **hit stagger** — brief movement pause imposed on enemies when they take damage; float-based cooldown, not a state change
-- **death tween** — scale-to-zero animation on enemy death using `create_tween()`, providing visual feedback before `queue_free()`
-- **enemy variant** — a `.tscn` scene referencing `enemy.gd` with different `@export` values for speed, health, damage, color, and size; currently: standard (red, balanced), runner (green, fast, fragile), brute (purple, slow, tanky)
-- **attack telegraph** — configurable orange flash on an enemy before it deals melee damage, giving the player time to react; driven by a one-shot TelegraphTimer
-- **attack lunge** — brief forward velocity impulse applied to the enemy when its telegraph completes and damage lands
-- **damage direction indicator** — semi-transparent red bar on a HUD edge showing which direction damage came from relative to the player's facing
-- **health pickup** — green emissive Area3D sphere placed in the level; persists until player walks into it; heals via duck-typed `heal()` method
-- **camera kick** — small upward pitch impulse applied to the head node on each shot, with smooth frame-rate-independent recovery; provides shooting impact feel without permanent aim drift
-- **head bob** — sine-based vertical oscillation of the head node while the player moves on the ground; provides grounded movement feel
-- **labyrinth** — the interconnected multi-room level layout; rooms connected by corridors with chokepoints and landmarks
-- **placed enemy** — an enemy instance positioned directly in the level scene at a fixed location, as opposed to dynamically spawned
-- **key pickup** — gold emissive rotating Area3D key shape (CSGCylinder3D bow + CSGBox3D shaft and teeth) that emits `picked_up` signal on player contact; collecting it unlocks the exit door
-- **door** — StaticBody3D on the Environment layer blocking the exit corridor; collision disabled on key collection, then tweened upward with rumble sound before `queue_free()`
-- **exit trigger** — Area3D placed behind the locked door; entering it with the key triggers victory
+- **hit stagger** — brief movement pause imposed on enemies when they take damage; float-based cooldown
+- **death tween** — scale-to-zero animation on enemy death using `create_tween()`; `died` signal emits before visual plays
+- **enemy variant** — a `.tscn` scene referencing `enemy.gd` with different `@export` values; standard (red), runner (green, fast), brute (purple, tanky)
+- **attack telegraph** — configurable orange flash on an enemy before melee damage; driven by one-shot TelegraphTimer
+- **attack lunge** — brief forward velocity impulse applied to the enemy when its telegraph completes
+- **damage direction indicator** — semi-transparent red bar on HUD edge showing damage source direction relative to player facing
+- **health pickup** — green emissive Area3D sphere; persists until player contact; heals via duck-typed `heal()` method
+- **camera kick** — small upward pitch impulse per shot with smooth recovery; prevents permanent aim drift
+- **head bob** — sine-based vertical oscillation of the head node while player moves on ground
+- **placed enemy** — enemy instance positioned directly in the level scene at a fixed location, not dynamically spawned
+- **key pickup** — gold emissive rotating Area3D key shape; emits `picked_up` signal on player contact; collecting it unlocks the exit door
+- **door** — StaticBody3D blocking the exit; collision disabled on key collection, then tweened upward before `queue_free()`
+- **exit trigger** — Area3D behind the locked door; entering it with the key emits `level_completed`
+- **fade overlay** — full-screen ColorRect on CanvasLayer 100; tween-animated alpha for fade-in/fade-out transitions between levels

@@ -21,7 +21,36 @@
 - One script per scene root, named to match the scene
 - Co-locate scene + script in the same directory
 - Scenes organized under `scenes/<entity>/`
-- No autoloads; signal wiring done by the level scene script (`level_1.gd`)
+- No autoloads; signal wiring done by the game shell (`game.gd`)
+
+## Game Shell (game.gd / game.tscn)
+
+- `game.tscn` is the main scene; contains Player, HUD, `LevelContainer` Node3D slot, and `FadeLayer` (CanvasLayer layer=100 with full-screen `FadeRect` ColorRect)
+- `game.gd` owns run-global state: `_kills`, `_elapsed_time`, `_game_over`, `_transitioning`, `_current_level_index`
+- Player added to `&"player"` group in `game.gd._ready()` so enemies can find it
+- Player-HUD signal wiring (health_changed, hit_landed, damage_taken_from, died) done once in `game.gd._ready()`
+- `LEVELS` const array defines ordered level file paths
+- `_load_level(index)` frees previous level, instances next into `LevelContainer`, calls `_wire_level()`, resets key status, updates level label, positions player at SpawnPoint
+- `_wire_level()` connects enemy `died` signals, level `level_completed` signal, and calls `level.setup(player, hud)`
+- `_transition_to_next_level()`: disables player input → fade out (0.4s) → swap level → zero velocity → re-enable input → fade in (0.4s)
+- On `level_completed`: advances to next level via fade transition, or calls `_finish_game()` for final victory; guarded by `_transitioning` and `_game_over` flags
+- On player `died`: shows game over panel
+- HUD `restart_requested` reloads entire `game.tscn` via `change_scene_to_file.call_deferred()`
+- Game starts with fade-in from black
+
+## Level Contract
+
+Each level scene must provide:
+
+- Root Node3D with script that has `signal level_completed` and `func setup(player, hud)`
+- `SpawnPoint` (Marker3D) for player positioning and facing
+- `Enemies` (Node3D) container; children with `died` signal get auto-wired by game shell
+- `Pickups` (Node3D) container for health pickups (self-contained, no wiring needed)
+- `KeyPickup` (Area3D) with `picked_up` signal
+- `Door` (StaticBody3D) on Environment layer
+- `ExitTrigger` (Area3D) with collision_mask=2 (Player)
+- `WorldEnvironment` with level-specific atmosphere settings
+- Level-local state: `_has_key`, `_completed`, ambient audio, key/door references
 
 ## Damage and Healing Pattern
 
@@ -30,16 +59,15 @@
 - Both damage and healing checked via `has_method()` duck typing — no shared base class required
 - Dead target detected by checking `collision_layer == 0`
 - Player sets `collision_layer = 0` and disables physics/input processing on death
-- When `source_position` is finite, player calculates angle from its forward direction to the source and emits `damage_taken_from(angle)` for HUD direction indicators
+- When `source_position` is finite, player calculates angle to source and emits `damage_taken_from(angle)` for HUD direction indicators
 
 ## Health Pickup Pattern
 
 - Area3D scene with collision_layer=0, collision_mask=2 (Player only)
-- Uses duck-typed `body.has_method(&"heal")` on `body_entered` — same pattern as damage interface
+- Uses duck-typed `body.has_method(&"heal")` on `body_entered`
 - Pickups placed as static scene instances in the level; persist until collected
 - Slow Y-axis rotation in `_process` for visual readability
 - Procedural pickup chime reparented to pickup's parent before `queue_free()` so sound outlives the node
-- `queue_free()` on collection
 
 ## Material Duplication
 
@@ -53,7 +81,7 @@
 - Player uses `AudioStreamPlayer` (non-spatial) for shoot and hurt sounds
 - Enemies use `AudioStreamPlayer3D` for spatially positioned hit and alert sounds
 - Level script owns progression sounds (key chime, door rumble) and ambient drone
-- Ambient drone uses `AudioStreamWAV.LOOP_FORWARD` with `loop_end` for seamless looping
+- Ambient drone uses `AudioStreamWAV.LOOP_FORWARD` with `loop_end` for seamless looping; pitch/harmonics vary per level
 - For sounds that must outlive their source node: create AudioStreamPlayer, reparent to persistent parent, connect `finished` to `queue_free`
 
 ## Enemy AI Pattern
@@ -61,85 +89,58 @@
 - Single `enemy.gd` script shared by all enemy variants; behavior tuned via `@export` vars (speed, health, damage, cooldowns, color, ranges, LOS memory)
 - Variant scenes (`enemy.tscn`, `enemy_runner.tscn`, `enemy_brute.tscn`) override exports and mesh/collision dimensions
 - Line-of-sight-gated detection: `PhysicsDirectSpaceState3D.intersect_ray()` from enemy eye height to player eye height against Environment layer (1); IDLE→CHASE requires both distance < `detection_range` AND unobstructed LOS
-- LOS memory: CHASE state tracks `_time_since_last_seen` — resets when enemy sees player, increments each physics frame when LOS is blocked; returns to IDLE after `los_memory_duration` (default 3.0s, configurable per variant via export)
+- LOS memory: CHASE state tracks `_time_since_last_seen`; returns to IDLE after `los_memory_duration` (configurable per variant)
 - Direct movement toward player via `move_and_slide()` for obstacle sliding
-- Timer-based attacks with telegraph: one-shot TelegraphTimer fires before damage (duration configurable per variant), enemy flashes orange during wind-up
-- Attack lunge: velocity impulse toward player on telegraph timeout; ATTACK state uses `move_toward` decay (not instant zero) so lunge produces visible forward motion
+- Timer-based attacks with telegraph: one-shot TelegraphTimer fires before damage, enemy flashes orange during wind-up
+- Attack lunge: velocity impulse toward player on telegraph timeout
 - Player found via `get_tree().get_nodes_in_group(&"player")`
-- Hit stagger via float countdown in `_physics_process` — skips movement while `_stagger_time > 0`, no extra Timer needed
-- Death uses `create_tween()` for shrink effect — `died` signal emits immediately (so kill count updates), collision disabled, visual tween plays, then `queue_free()` on tween callback
-- Color management via `_set_color()` helper with `normal_color` export / `TELEGRAPH_COLOR` constant; telegraph timer stopped on state exit to prevent stale color
-- `_health` initialized from `max_health` export in `_ready()`; initial material color set from `normal_color` export
-- 3D spatial alert sound plays on IDLE→CHASE transition for audio feedback of enemy detection
+- Hit stagger via float countdown in `_physics_process`
+- Death uses `create_tween()` for shrink effect — `died` signal emits immediately, then `queue_free()` on tween callback
 
 ## Combat Feedback Pattern
 
-- Player emits `hit_landed` signal when hitscan connects with a damageable target; level script wires this to HUD
-- HUD hitmarker: crosshair ColorRects flash white for 0.08s on hit confirmation, then reset to default color
+- Player emits `hit_landed` signal when hitscan connects; game shell wires this to HUD
+- HUD hitmarker: crosshair ColorRects flash white for 0.08s on hit confirmation
 - Enemy hit flash: material set to white for 0.1s via await, guarded by `is_instance_valid` and state check
-- Damage direction indicators: 4 semi-transparent red edge bars on HUD (top/bottom/left/right), shown based on angle from player forward to damage source; counter-guarded await prevents overlapping hide calls
-- Health bar color: StyleBoxFlat fill override on ProgressBar, color set in `update_health()` — green (>50%), yellow (25-50%), red (<=25%)
-- Camera kick: each shot applies a small upward pitch impulse to the head node; smooth recovery in `_physics_process` at a fixed angular rate, clamped to pitch limits; fully recovers so aim is never permanently offset
-- Head bob: sine-based vertical oscillation on head node `position.y` while moving on floor; resets smoothly when stationary or airborne; base Y cached from scene transform in `_ready()`
+- Damage direction indicators: 4 semi-transparent red edge bars on HUD; counter-guarded await prevents overlapping hide calls
+- Health bar color: green (>50%), yellow (25-50%), red (<=25%)
+- Camera kick: small upward pitch impulse per shot; smooth recovery in `_physics_process`
+- Head bob: sine-based vertical oscillation while moving on floor
 
 ## GridMap Wall System
 
 - Walls use GridMap with a MeshLibrary (`wall_library.tres`) instead of individual CSG nodes
 - Cell size: 0.5 x 4 x 0.5 (each cell is one wall block, 0.5m thick, 4m tall)
-- `cell_center_x = false`, `cell_center_y = true`, `cell_center_z = false` — cell index maps directly to world position (x = i _ 0.5, z = k _ 0.5)
+- `cell_center_x = false`, `cell_center_y = true`, `cell_center_z = false`
 - 6 MeshLibrary items (one per zone color): wall_spawn(0), wall_south_hall(1), wall_combat(2), wall_north(3), wall_key_room(4), wall_exit(5)
 - GridMap collision_layer = 1 (Environment), collision_mask = 0
-- Pillars, cover objects, floor, and ceiling remain as individual CSG nodes (non-wall geometry)
+- Pillars, cover objects, floor, and ceiling remain as individual CSG nodes
 
 ## Interior Lighting and Horror Atmosphere
 
-- No DirectionalLight (sunlight); enclosed labyrinth uses SpotLight3D lamps and a player flashlight
-- Ambient light: color-sourced `Color(0.06, 0.06, 0.1)` at energy 0.2 — dim cold-blue fill
-- 10 ceiling-mounted SpotLight3D lamps aimed downward under a `Lamps` Node3D parent; each lamp is a Node3D with a MeshInstance3D fixture (emissive BoxMesh 0.4×0.1×0.4) and a SpotLight3D (transform rotated so -Z points down)
-- All 10 lamps cast shadows; energy range 5-8, spot_range 8-10, spot_angle 50-55
-- Lamp colors are unsettling by zone: dying amber for spawn, blood-red for combat rooms, cold blue for corridors, warm gold for key room, eerie green for exit
-- Player has a SpotLight3D flashlight on Camera3D (energy 8, range 25, angle 35, shadow-casting)
-- Ceiling is a single CSGBox3D at Y=4.5, size 36×1×36 (bottom face flush with wall tops at Y=4), collision_layer=1
+- No DirectionalLight; enclosed levels use SpotLight3D lamps and player flashlight
+- Each level has its own WorldEnvironment with distinct ambient light, fog density, color grading
+- Ceiling-mounted SpotLight3D lamps aimed downward under a `Lamps` Node3D parent; each lamp is a Node3D with MeshInstance3D emissive fixture and SpotLight3D; all shadow-casting
+- Lamp color palettes vary per level: Level 1 uses warm amber/red/blue/green; Level 2 uses cold violet/blue/green/deep red
+- Player SpotLight3D flashlight on Camera3D (energy 8, range 25, angle 35, shadow-casting)
+- Ceiling is CSGBox3D at Y=4.5 flush with wall tops at Y=4, collision_layer=1
 
 ## Horror Post-Processing
 
-- Volumetric fog: density 0.008, dark blue-grey albedo, anisotropy 0.6 for light shafts
-- SSAO: radius 1.5, intensity 2.0 — darkens corners and wall joints
-- Glow: intensity 0.3, bloom 0.1 — subtle light bleed
-- Color adjustment: brightness 1.0, contrast 1.1, saturation 0.6 — desaturated world
-- Debanding enabled in project settings (`rendering/anti_aliasing/quality/use_debanding`)
-- Dark material palette: wall albedo 0.18-0.30, floor 0.15, ceiling 0.10 — medium-dark surfaces that reflect light without absorbing it entirely
+- Volumetric fog with dark albedo and anisotropy for light shafts; density varies per level
+- SSAO for darkened corners and wall joints
+- Glow for subtle light bleed
+- Color adjustment: desaturated world; saturation/contrast vary per level
+- Debanding enabled in project settings
+- Dark material palette: wall albedo 0.12-0.30, floor 0.12-0.15, ceiling 0.08-0.10
 
 ## Physics Rules
 
 - Moving bodies use only convex shapes (CapsuleShape3D, BoxShape3D, SphereShape3D)
 - Never ConcavePolygonShape3D on moving bodies
-- GridMap with collision for static wall geometry; CSG with `use_collision = true` and `collision_mask = 0` for non-wall static objects (floor, pillars, cover)
+- GridMap with collision for static wall geometry; CSG with `use_collision = true` and `collision_mask = 0` for non-wall static objects
 - Never multiply mouse motion by delta
 - Mouse yaw on body node, pitch on head node, pitch clamped +-89 deg
-
-## Game Shell (game.gd / game.tscn)
-
-- `game.tscn` is the main scene; contains Player, HUD, and a `LevelContainer` Node3D slot
-- `game.gd` owns run-global state: `_kills`, `_elapsed_time`, `_game_over`, `_current_level_index`
-- Player added to `&"player"` group in `game.gd._ready()` so enemies can find it
-- Player↔HUD signal wiring (health_changed, hit_landed, damage_taken_from, died) done once in `game.gd._ready()`
-- `LEVELS` const array defines ordered level file paths
-- `_load_level(index)` frees previous level, instances next into `LevelContainer`, calls `_wire_level()`
-- `_wire_level()` connects enemy `died` signals, level `level_completed` signal, and calls `level.setup(player, hud)`
-- On `level_completed`: advances to next level or calls `_finish_game()` for final victory
-- On player `died`: shows game over panel
-- HUD `restart_requested` reloads entire `game.tscn` via `change_scene_to_file.call_deferred()`
-
-## Level Scripts (per-level, e.g. level_1.gd)
-
-- Each level script owns level-local state: `_has_key`, `_completed`, ambient audio, key/door references
-- `setup(player, hud)` receives persistent refs from game shell for HUD updates (key status)
-- Key pickup `picked_up` signal → sets `_has_key`, flashes HUD key status, plays chime, opens door
-- Exit trigger `body_entered` → checks player group + `_has_key` + not `_completed` → emits `level_completed`
-- Each level has a `SpawnPoint` (Marker3D) used by game shell to position the player
-- Enemies placed under `Enemies` container; health pickups under `Pickups` container
-- Level owns its own WorldEnvironment, geometry, lamps, and ambient drone
 
 ## Scene Restart
 

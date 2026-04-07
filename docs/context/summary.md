@@ -1,6 +1,6 @@
 ## What
 
-First-person shooter prototype built in Godot 4.6 with GDScript. A horror-themed labyrinth FPS: player navigates dark interconnected rooms and corridors with a flashlight, fights placed enemies, collects a key, unlocks the exit, and escapes. Three enemy variants (standard, runner, brute) with line-of-sight-aware direct-chase AI, procedurally generated sound effects, dark zone-colored level geometry, health/damage with visual feedback, HUD with key status and kills tracking, and a complete game loop (explore → fight → find key → exit → victory or death → restart).
+Multi-level horror FPS prototype built in Godot 4.6 with GDScript. Player navigates dark enclosed mazes with a flashlight, fights placed enemies, collects a key to unlock the exit, and progresses through levels. Three enemy variants (standard, runner, brute) with line-of-sight-aware direct-chase AI, procedurally generated sound effects, dark zone-colored level geometry, health/damage with visual feedback, HUD with level indicator, key status, and kills tracking. Two handcrafted levels with fade-to-black transitions preserving player state across levels.
 
 ## Architecture
 
@@ -9,40 +9,36 @@ First-person shooter prototype built in Godot 4.6 with GDScript. A horror-themed
 - "Call down, signal up" for node communication
 - Duck-typed damage interface via `has_method(&"take_damage")`
 - Inline enum state machine for enemy AI (IDLE/CHASE/ATTACK/DEAD)
-- **Two-tier scene hierarchy:** persistent `game.tscn` shell (Player, HUD, run state) wraps swappable level scenes
-- `game.gd` owns run state (`_kills`, `_elapsed_time`, `_game_over`), wires Player↔HUD signals, loads levels into `LevelContainer`
-- Level scripts own level-local state (key, door, ambient audio) and emit `level_completed` signal; receive Player/HUD refs via `setup()`
-- `LEVELS` array in `game.gd` defines the ordered level sequence; game advances or shows final victory based on index
+- Two-tier scene hierarchy: persistent `game.tscn` shell (Player, HUD, run state, fade overlay) wraps swappable level scenes
+- `game.gd` owns run state, wires Player-HUD signals, loads levels into `LevelContainer`, manages fade transitions
+- Level scripts own level-local state (key, door, ambient audio) and emit `level_completed`; receive Player/HUD refs via `setup()`
+- `LEVELS` array in `game.gd` defines ordered level sequence; game advances or shows final victory based on index
 - Enemies placed as static scene instances in each level, not dynamically spawned
 
 ## Core Flow
 
-Player spawns in level (positioned at SpawnPoint Marker3D) → explores rooms and corridors using flashlight → fights placed enemies → finds key pickup → door slides open → reaches exit trigger → level emits `level_completed` → fade to black → game shell advances to next level → fade in. Completing final level shows victory. Death at any point triggers game over. Restart reloads entire game shell via `change_scene_to_file`.
+Game shell loads level 1 with fade-in from black. Player explores rooms using flashlight, fights placed enemies, finds key pickup, door opens, reaches exit trigger. Level emits `level_completed`. Game shell disables player input, fades to black, swaps level, repositions player at SpawnPoint, re-enables input, fades in. Completing final level shows victory. Death triggers game over. Restart reloads entire game shell.
 
 ## System State
 
-- Player: movement, mouse-look, jump, rate-limited hitscan shooting with muzzle flash, toggleable SpotLight3D flashlight (F key, off by default), damage overlay on hit, hit confirmation signal, healing via pickups, death
-- Level 1 (Labyrinth): GridMap-based multi-room level (36x36); warm-to-cool zone lighting (amber, blood-red, cold blue, eerie green); 10 ceiling SpotLight3D lamps; 7 enemies (4 standard, 2 runners, 1 brute); 3 health pickups; rooms: spawn, south hall, combat rooms, north hall, key room, NW corridor, exit room
-- Level 2 (Cold Tunnels): GridMap-based winding layout (24x24); colder atmosphere with denser fog, deeper blue ambient, more desaturated; 8 ceiling SpotLight3D lamps with violet/cold blue/green/red tones; 8 enemies (4 standard, 3 runners, 1 brute); 3 health pickups; rooms: spawn alcove, south hall, central hub, north corridor, key room, exit room; deeper ambient drone
-- Enemies: 7 placed instances — 4 standard, 2 runners, 1 brute in key room; line-of-sight-gated direct-chase AI, telegraphed melee, hit stagger, tween death effect, 3D spatial sounds
-- HUD: color-coded health bar, crosshair with hitmarker, damage direction indicators, kills counter, key status, game over/victory panels
-- Health pickups: 3 placed in level; Area3D with duck-typed `heal()` on player contact
-- Key pickup: gold emissive rotating key shape (bow + shaft + teeth) in key room; Area3D emits `picked_up` signal
-- Key/door/exit progression: key pickup → door opens → exit trigger → victory
-- Audio: all sounds procedurally generated at runtime via AudioStreamWAV
-- Game loop: explore → fight → find key → door opens → reach exit → victory or death → restart
+- Player: movement, mouse-look, jump, hitscan shooting, toggleable flashlight (F key, off by default), damage overlay, hit confirmation, healing, death
+- Level 1: 36x36 GridMap maze; warm-to-cool zone lighting; 10 lamps; 7 enemies (4 standard, 2 runners, 1 brute); 3 health pickups
+- Level 2: 24x24 GridMap maze; colder atmosphere with denser fog, deeper ambient, more desaturated; 8 lamps; 8 enemies (4 standard, 3 runners, 1 brute); 3 health pickups; deeper ambient drone
+- HUD: health bar, crosshair with hitmarker, damage direction indicators, kills counter, key status, level label, game over/victory panels
+- Run state persists across levels: health, flashlight, kills, elapsed time
+- Level-local state resets per level: key, door, enemies, pickups, geometry, lighting, ambient audio
 
 ## Capabilities
 
+- Multi-level progression with fade-to-black transitions
 - CharacterBody3D player with lerp-based acceleration/friction and sine-based head bob
-- SpotLight3D flashlight on camera (off by default, F to toggle) for horror visibility
-- Mouse-look using `screen_relative`, yaw/pitch separated, pitch clamped +-89 deg
+- SpotLight3D flashlight on camera (off by default, F to toggle)
 - RayCast3D hitscan shooting with duck-typed damage, fire rate cooldown, muzzle flash, camera kick recoil
 - Horror environment: volumetric fog, SSAO, glow bloom, desaturated color grading, debanding
-- 10 downward SpotLight3D ceiling lamps with zone-colored unsettling tones (amber, blood-red, cold blue, eerie green)
+- Ceiling SpotLight3D lamps with zone-colored unsettling tones per level
 - Enemy LOS detection, attack telegraph, hit stagger, death tween, direct-chase AI
 - Damage direction indicators, hitmarker feedback, health bar color coding
-- Signal-driven HUD, victory/game-over states, scene restart
+- Signal-driven HUD with level indicator, victory/game-over states, scene restart
 
 ## Tech Stack
 
