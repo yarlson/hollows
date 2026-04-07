@@ -5,6 +5,7 @@ const LEVELS: Array[String] = [
 	"res://scenes/levels/level_2.tscn",
 ]
 const FADE_DURATION: float = 0.4
+const TRANSITION_HEAL: int = 25
 
 var _game_over: bool = false
 var _transitioning: bool = false
@@ -55,6 +56,8 @@ func _load_level(index: int) -> void:
 		_player.global_transform.origin = spawn.global_transform.origin
 		_player.rotation.y = spawn.rotation.y
 
+	_player.reset_for_level()
+
 
 func _wire_level(level: Node3D) -> void:
 	var enemies: Node = level.get_node_or_null("Enemies")
@@ -93,8 +96,11 @@ func _transition_to_next_level() -> void:
 	_load_level(_current_level_index)
 
 	_player.velocity = Vector3.ZERO
+	_player.heal(TRANSITION_HEAL)
 	_player.set_physics_process(true)
 	_player.set_process_unhandled_input(true)
+
+	_hud.flash_level_announcement(_current_level_index + 1)
 
 	await _fade_in()
 
@@ -121,12 +127,12 @@ func _finish_game() -> void:
 	_player.set_process_unhandled_input(false)
 	_player.set_physics_process(false)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	_hud.show_victory(_kills, _elapsed_time)
+	_hud.show_victory(_kills, _elapsed_time, LEVELS.size())
 
 
 func _on_player_died() -> void:
 	_game_over = true
-	_hud.show_game_over(_kills, _elapsed_time)
+	_hud.show_game_over(_kills, _elapsed_time, _current_level_index + 1)
 
 
 func _on_restart() -> void:

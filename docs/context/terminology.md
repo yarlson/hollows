@@ -1,6 +1,8 @@
 - **game shell** — persistent `game.tscn` scene that owns Player, HUD, run state, and fade overlay; survives level transitions
 - **level contract** — required nodes and signals a level scene must provide: SpawnPoint, Enemies, KeyPickup, Door, ExitTrigger, `setup()` method, `level_completed` signal
-- **level transition** — fade-to-black sequence that swaps level content while preserving player/HUD state; managed by `game.gd._transition_to_next_level()`
+- **level transition** — fade-to-black sequence that swaps level content while preserving player/HUD state; includes 25HP heal, head pitch reset, and level announcement
+- **transition heal** — 25HP recovery granted to the player between levels; softens difficulty without trivializing carry-over damage
+- **level announcement** — large centered HUD text ("- Level N -") shown after fade-in on level transition; holds 1.5s then fades out over 0.8s
 - **run state** — game-wide persistent state (kills, elapsed time, game_over, level index) owned by `game.gd`; survives level transitions, resets on restart
 - **hitscan** — instant-hit weapon using RayCast3D; no projectile travel time
 - **duck-typed damage** — any node implementing `take_damage(amount: int)` is damageable; no base class required

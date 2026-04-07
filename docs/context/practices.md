@@ -32,9 +32,10 @@
 - `LEVELS` const array defines ordered level file paths
 - `_load_level(index)` frees previous level, instances next into `LevelContainer`, calls `_wire_level()`, resets key status, updates level label, positions player at SpawnPoint
 - `_wire_level()` connects enemy `died` signals, level `level_completed` signal, and calls `level.setup(player, hud)`
-- `_transition_to_next_level()`: disables player input → fade out (0.4s) → swap level → zero velocity → re-enable input → fade in (0.4s)
+- `_transition_to_next_level()`: disables player input → fade out (0.4s) → swap level → zero velocity → heal 25HP (`TRANSITION_HEAL`) → reset head pitch via `player.reset_for_level()` → re-enable input → show level announcement → fade in (0.4s)
 - On `level_completed`: advances to next level via fade transition, or calls `_finish_game()` for final victory; guarded by `_transitioning` and `_game_over` flags
-- On player `died`: shows game over panel
+- On player `died`: shows game over panel with level reached
+- Victory panel shows total levels, kills, and time; game over panel shows level, kills, and time
 - HUD `restart_requested` reloads entire `game.tscn` via `change_scene_to_file.call_deferred()`
 - Game starts with fade-in from black
 

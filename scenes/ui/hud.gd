@@ -26,6 +26,7 @@ var _health_fill_style: StyleBoxFlat = null
 @onready var _victory_summary: Label = $VictoryPanel/VBox/SummaryLabel
 @onready var _key_status: Label = $KeyStatus
 @onready var _level_label: Label = $LevelLabel
+@onready var _level_announcement: Label = $LevelAnnouncement
 @onready var _damage_top: ColorRect = $DamageIndicators/Top
 @onready var _damage_bottom: ColorRect = $DamageIndicators/Bottom
 @onready var _damage_left: ColorRect = $DamageIndicators/Left
@@ -37,6 +38,7 @@ func _ready() -> void:
 	_victory_restart.pressed.connect(_on_restart_pressed)
 	_game_over_panel.visible = false
 	_victory_panel.visible = false
+	_level_announcement.visible = false
 	_health_fill_style = StyleBoxFlat.new()
 	_health_fill_style.bg_color = HEALTH_COLOR_HIGH
 	_health_bar.add_theme_stylebox_override(&"fill", _health_fill_style)
@@ -67,19 +69,37 @@ func update_level(level_number: int) -> void:
 	_level_label.text = "Level %d" % level_number
 
 
-func show_game_over(kills: int, time_seconds: float) -> void:
+func flash_level_announcement(level_number: int) -> void:
+	_level_announcement.text = "- Level %d -" % level_number
+	_level_announcement.visible = true
+	_level_announcement.modulate.a = 1.0
+	await get_tree().create_timer(1.5).timeout
+	if not is_instance_valid(self):
+		return
+	var tween := create_tween()
+	tween.tween_property(_level_announcement, "modulate:a", 0.0, 0.8)
+	await tween.finished
+	if is_instance_valid(self):
+		_level_announcement.visible = false
+
+
+func show_game_over(kills: int, time_seconds: float, level: int) -> void:
 	@warning_ignore("integer_division")
 	var mins := int(time_seconds) / 60
 	var secs := int(time_seconds) % 60
-	_game_over_summary.text = "Kills: %d  |  Time: %d:%02d" % [kills, mins, secs]
+	_game_over_summary.text = (
+		"Level %d  |  Kills: %d  |  Time: %d:%02d" % [level, kills, mins, secs]
+	)
 	_game_over_panel.visible = true
 
 
-func show_victory(kills: int, time_seconds: float) -> void:
+func show_victory(kills: int, time_seconds: float, total_levels: int) -> void:
 	@warning_ignore("integer_division")
 	var mins := int(time_seconds) / 60
 	var secs := int(time_seconds) % 60
-	_victory_summary.text = "Kills: %d  |  Time: %d:%02d" % [kills, mins, secs]
+	_victory_summary.text = (
+		"%d Levels  |  Kills: %d  |  Time: %d:%02d" % [total_levels, kills, mins, secs]
+	)
 	_victory_panel.visible = true
 
 

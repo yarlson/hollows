@@ -122,6 +122,13 @@ func heal(amount: int) -> void:
 	health_changed.emit(_health, _max_health)
 
 
+func reset_for_level() -> void:
+	_head.rotation.x = 0.0
+	_recoil_recovery = 0.0
+	_bob_time = 0.0
+	_head.position.y = _head_base_y
+
+
 func _shoot() -> void:
 	if not _can_shoot:
 		return

@@ -17,15 +17,15 @@ Multi-level horror FPS prototype built in Godot 4.6 with GDScript. Player naviga
 
 ## Core Flow
 
-Game shell loads level 1 with fade-in from black. Player explores rooms using flashlight, fights placed enemies, finds key pickup, door opens, reaches exit trigger. Level emits `level_completed`. Game shell disables player input, fades to black, swaps level, repositions player at SpawnPoint, re-enables input, fades in. Completing final level shows victory. Death triggers game over. Restart reloads entire game shell.
+Game shell loads level 1 with fade-in from black. Player explores rooms using flashlight, fights placed enemies, finds key pickup, door opens, reaches exit trigger. Level emits `level_completed`. Game shell disables player input, fades to black, swaps level, heals player 25HP, resets head pitch, repositions at SpawnPoint, re-enables input, fades in with level announcement. Completing final level shows victory with total stats. Death triggers game over showing level reached. Restart reloads entire game shell.
 
 ## System State
 
 - Player: movement, mouse-look, jump, hitscan shooting, toggleable flashlight (F key, off by default), damage overlay, hit confirmation, healing, death
 - Level 1: 36x36 GridMap maze; warm-to-cool zone lighting; 10 lamps; 7 enemies (4 standard, 2 runners, 1 brute); 3 health pickups
 - Level 2: 24x24 GridMap maze; colder atmosphere with denser fog, deeper ambient, more desaturated; 8 lamps; 8 enemies (4 standard, 3 runners, 1 brute); 3 health pickups; deeper ambient drone
-- HUD: health bar, crosshair with hitmarker, damage direction indicators, kills counter, key status, level label, game over/victory panels
-- Run state persists across levels: health, flashlight, kills, elapsed time
+- HUD: health bar, crosshair with hitmarker, damage direction indicators, kills counter, key status, level label, level announcement overlay, game over/victory panels with run stats
+- Run state persists across levels: health, flashlight, kills, elapsed time; 25HP heal on level transition
 - Level-local state resets per level: key, door, enemies, pickups, geometry, lighting, ambient audio
 
 ## Capabilities
