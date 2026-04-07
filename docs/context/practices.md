@@ -70,6 +70,14 @@ Each level scene must provide:
 - Slow Y-axis rotation in `_process` for visual readability
 - Procedural pickup chime reparented to pickup's parent before `queue_free()` so sound outlives the node
 
+## Ammo Pickup Pattern
+
+- Mirrors health pickup pattern exactly: Area3D, collision_layer=0, collision_mask=2
+- Uses duck-typed `body.has_method(&"add_ammo")` on `body_entered`
+- `@export var ammo_amount: int = 10` per pickup, clamped to `_max_ammo` on player
+- Yellow/amber emissive CSG visual to distinguish from health (red cross)
+- Player emits `ammo_changed(current, max)` signal; HUD wired via game shell same as `health_changed`
+
 ## Material Duplication
 
 - All scene instances that modify material properties call `_mesh.get_surface_override_material(0).duplicate()` in `_ready()`

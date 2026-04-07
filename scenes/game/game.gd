@@ -24,6 +24,7 @@ func _ready() -> void:
 	_fade_rect.color = Color(0.0, 0.0, 0.0, 1.0)
 	_player.add_to_group(&"player")
 	_player.health_changed.connect(_hud.update_health)
+	_player.ammo_changed.connect(_hud.update_ammo)
 	_player.hit_landed.connect(_hud.flash_hitmarker)
 	_player.damage_taken_from.connect(_hud.show_damage_direction)
 	_player.died.connect(_on_player_died)

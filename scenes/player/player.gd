@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 signal health_changed(new_health: int, max_health: int)
+signal ammo_changed(current_ammo: int, max_ammo: int)
 signal hit_landed
 signal damage_taken_from(angle: float)
 signal died
@@ -17,6 +18,8 @@ const DEGREES_PER_UNIT: float = 0.001
 
 var _health: int = 100
 var _max_health: int = 100
+var _ammo: int = 30
+var _max_ammo: int = 60
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var _mouse_captured: bool = true
 var _can_shoot: bool = true
@@ -31,6 +34,7 @@ var _head_base_y: float = 0.0
 @onready var _damage_overlay: ColorRect = $DamageOverlay
 @onready var _shoot_sfx: AudioStreamPlayer = $ShootSFX
 @onready var _hurt_sfx: AudioStreamPlayer = $HurtSFX
+@onready var _dryfire_sfx: AudioStreamPlayer = $DryfireSFX
 
 
 func _ready() -> void:
@@ -39,7 +43,9 @@ func _ready() -> void:
 	_raycast.enabled = true
 	_shoot_sfx.stream = _make_noise(0.06, 4000.0, 0.4)
 	_hurt_sfx.stream = _make_noise(0.12, 800.0, 0.5)
+	_dryfire_sfx.stream = _make_noise(0.03, 1200.0, 0.15)
 	health_changed.emit(_health, _max_health)
+	ammo_changed.emit(_ammo, _max_ammo)
 
 
 func _notification(what: int) -> void:
@@ -122,6 +128,11 @@ func heal(amount: int) -> void:
 	health_changed.emit(_health, _max_health)
 
 
+func add_ammo(amount: int) -> void:
+	_ammo = mini(_ammo + amount, _max_ammo)
+	ammo_changed.emit(_ammo, _max_ammo)
+
+
 func reset_for_level() -> void:
 	_head.rotation.x = 0.0
 	_recoil_recovery = 0.0
@@ -132,7 +143,12 @@ func reset_for_level() -> void:
 func _shoot() -> void:
 	if not _can_shoot:
 		return
+	if _ammo <= 0:
+		_dryfire_sfx.play()
+		return
 	_can_shoot = false
+	_ammo -= 1
+	ammo_changed.emit(_ammo, _max_ammo)
 	_raycast.force_raycast_update()
 	if _raycast.is_colliding():
 		var collider := _raycast.get_collider()

@@ -25,6 +25,7 @@ var _health_fill_style: StyleBoxFlat = null
 @onready var _game_over_summary: Label = $GameOverPanel/VBox/SummaryLabel
 @onready var _victory_summary: Label = $VictoryPanel/VBox/SummaryLabel
 @onready var _key_status: Label = $KeyStatus
+@onready var _ammo_label: Label = $AmmoLabel
 @onready var _level_label: Label = $LevelLabel
 @onready var _level_announcement: Label = $LevelAnnouncement
 @onready var _damage_top: ColorRect = $DamageIndicators/Top
@@ -55,6 +56,10 @@ func update_health(new_health: int, max_health: int) -> void:
 			_health_fill_style.bg_color = HEALTH_COLOR_MID
 		else:
 			_health_fill_style.bg_color = HEALTH_COLOR_HIGH
+
+
+func update_ammo(current: int, max_ammo: int) -> void:
+	_ammo_label.text = "AMMO: %d / %d" % [current, max_ammo]
 
 
 func update_kills(kills: int) -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://scenes/levels/level_2.gd" id="0_script"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy.tscn" id="3_enemy"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy_brute.tscn" id="5_brute"]
 [ext_resource type="PackedScene" path="res://scenes/pickups/health_pickup.tscn" id="6_health"]
 [ext_resource type="PackedScene" path="res://scenes/pickups/key_pickup.tscn" id="7_key"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/ammo_pickup.tscn" id="9_ammo"]
 [ext_resource type="MeshLibrary" path="res://scenes/levels/wall_library.tres" id="8_meshlib"]
 
 [sub_resource type="StandardMaterial3D" id="DoorMaterial"]
@@ -316,6 +317,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.5, -3)
 
 [node name="HealthPickup3" parent="Pickups" instance=ExtResource("6_health")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.5, -5)
+
+[node name="AmmoPickup1" parent="Pickups" instance=ExtResource("9_ammo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, 6)
+
+[node name="AmmoPickup2" parent="Pickups" instance=ExtResource("9_ammo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+
+[node name="AmmoPickup3" parent="Pickups" instance=ExtResource("9_ammo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -7)
 
 [node name="KeyPickup" parent="." instance=ExtResource("7_key")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.5, -8)

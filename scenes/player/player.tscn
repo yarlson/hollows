@@ -57,3 +57,6 @@ volume_db = -6.0
 
 [node name="HurtSFX" type="AudioStreamPlayer" parent="."]
 volume_db = -3.0
+
+[node name="DryfireSFX" type="AudioStreamPlayer" parent="."]
+volume_db = -10.0
