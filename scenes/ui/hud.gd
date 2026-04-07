@@ -25,6 +25,7 @@ var _health_fill_style: StyleBoxFlat = null
 @onready var _game_over_summary: Label = $GameOverPanel/VBox/SummaryLabel
 @onready var _victory_summary: Label = $VictoryPanel/VBox/SummaryLabel
 @onready var _key_status: Label = $KeyStatus
+@onready var _level_label: Label = $LevelLabel
 @onready var _damage_top: ColorRect = $DamageIndicators/Top
 @onready var _damage_bottom: ColorRect = $DamageIndicators/Bottom
 @onready var _damage_left: ColorRect = $DamageIndicators/Left
@@ -60,6 +61,10 @@ func update_kills(kills: int) -> void:
 
 func update_key_status(has_key: bool) -> void:
 	_key_status.text = "KEY: FOUND" if has_key else "KEY: ---"
+
+
+func update_level(level_number: int) -> void:
+	_level_label.text = "Level %d" % level_number
 
 
 func show_game_over(kills: int, time_seconds: float) -> void:

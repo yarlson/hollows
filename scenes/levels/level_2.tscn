@@ -1,0 +1,344 @@
+[gd_scene load_steps=22 format=3]
+
+[ext_resource type="Script" path="res://scenes/levels/level_2.gd" id="0_script"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/enemy.tscn" id="3_enemy"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/enemy_runner.tscn" id="4_runner"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/enemy_brute.tscn" id="5_brute"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/health_pickup.tscn" id="6_health"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/key_pickup.tscn" id="7_key"]
+[ext_resource type="MeshLibrary" path="res://scenes/levels/wall_library.tres" id="8_meshlib"]
+
+[sub_resource type="StandardMaterial3D" id="DoorMaterial"]
+albedo_color = Color(0.25, 0.12, 0.12, 1)
+roughness = 0.8
+
+[sub_resource type="BoxShape3D" id="DoorShape"]
+size = Vector3(0.5, 4, 2)
+
+[sub_resource type="BoxShape3D" id="ExitShape"]
+size = Vector3(4, 4, 4)
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.03, 0.04, 0.1, 1)
+ambient_light_energy = 0.15
+tonemap_mode = 3
+ssao_enabled = true
+ssao_radius = 1.5
+ssao_intensity = 2.5
+glow_enabled = true
+glow_intensity = 0.25
+glow_bloom = 0.1
+glow_blend_mode = 1
+glow_hdr_threshold = 0.8
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.012
+volumetric_fog_albedo = Color(0.08, 0.08, 0.15, 1)
+volumetric_fog_emission = Color(0, 0, 0, 1)
+volumetric_fog_anisotropy = 0.6
+volumetric_fog_length = 25.0
+adjustment_enabled = true
+adjustment_brightness = 1.0
+adjustment_contrast = 1.15
+adjustment_saturation = 0.45
+
+[sub_resource type="StandardMaterial3D" id="FloorMat"]
+albedo_color = Color(0.12, 0.12, 0.16, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="CeilingMat"]
+albedo_color = Color(0.08, 0.08, 0.12, 1)
+roughness = 0.98
+
+[sub_resource type="StandardMaterial3D" id="PillarMat"]
+albedo_color = Color(0.18, 0.16, 0.22, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="LampMat"]
+albedo_color = Color(0.4, 0.4, 0.55, 1)
+emission_enabled = true
+emission = Color(0.4, 0.4, 0.6, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="BoxMesh" id="LampMesh"]
+size = Vector3(0.4, 0.1, 0.4)
+material = SubResource("LampMat")
+
+[sub_resource type="StandardMaterial3D" id="ExitLampMat"]
+albedo_color = Color(0.4, 0.2, 0.2, 1)
+emission_enabled = true
+emission = Color(0.5, 0.15, 0.1, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="BoxMesh" id="ExitLampMesh"]
+size = Vector3(0.4, 0.1, 0.4)
+material = SubResource("ExitLampMat")
+
+[node name="Level2" type="Node3D"]
+script = ExtResource("0_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Geometry" type="Node3D" parent="."]
+
+[node name="Floor" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(24, 1, 24)
+material = SubResource("FloorMat")
+
+[node name="Ceiling" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(24, 1, 24)
+material = SubResource("CeilingMat")
+
+[node name="Walls" type="GridMap" parent="Geometry"]
+mesh_library = ExtResource("8_meshlib")
+cell_size = Vector3(0.5, 4, 0.5)
+cell_center_x = false
+cell_center_y = true
+cell_center_z = false
+collision_layer = 1
+collision_mask = 0
+data = {
+"cells": PackedInt32Array(65512, 65512, 3, 65513, 65512, 3, 65514, 65512, 3, 65515, 65512, 3, 65516, 65512, 3, 65517, 65512, 3, 65518, 65512, 3, 65519, 65512, 3, 65520, 65512, 3, 65521, 65512, 3, 65522, 65512, 3, 65523, 65512, 3, 65524, 65512, 3, 65525, 65512, 3, 65526, 65512, 3, 65527, 65512, 3, 65528, 65512, 3, 65529, 65512, 3, 65530, 65512, 3, 65531, 65512, 3, 65532, 65512, 3, 65533, 65512, 3, 65534, 65512, 3, 65535, 65512, 3, 0, 65512, 3, 1, 65512, 3, 2, 65512, 3, 3, 65512, 3, 4, 65512, 3, 5, 65512, 3, 6, 65512, 3, 7, 65512, 3, 8, 65512, 3, 9, 65512, 3, 10, 65512, 3, 11, 65512, 3, 12, 65512, 3, 13, 65512, 3, 14, 65512, 3, 15, 65512, 3, 16, 65512, 3, 17, 65512, 3, 18, 65512, 3, 19, 65512, 3, 20, 65512, 3, 21, 65512, 3, 22, 65512, 3, 23, 65512, 3, 24, 65512, 3, 65512, 24, 3, 65513, 24, 3, 65514, 24, 3, 65515, 24, 3, 65516, 24, 3, 65517, 24, 3, 65518, 24, 3, 65519, 24, 3, 65520, 24, 3, 65521, 24, 3, 65522, 24, 3, 65523, 24, 3, 65524, 24, 3, 65525, 24, 3, 65526, 24, 3, 65527, 24, 3, 65528, 24, 3, 65529, 24, 3, 65530, 24, 3, 65531, 24, 3, 65532, 24, 3, 65533, 24, 3, 65534, 24, 3, 65535, 24, 3, 0, 24, 3, 1, 24, 3, 2, 24, 3, 3, 24, 3, 4, 24, 3, 5, 24, 3, 6, 24, 3, 7, 24, 3, 8, 24, 3, 9, 24, 3, 10, 24, 3, 11, 24, 3, 12, 24, 3, 13, 24, 3, 14, 24, 3, 15, 24, 3, 16, 24, 3, 17, 24, 3, 18, 24, 3, 19, 24, 3, 20, 24, 3, 21, 24, 3, 22, 24, 3, 23, 24, 3, 24, 24, 3, 65512, 65512, 3, 65512, 65513, 3, 65512, 65514, 3, 65512, 65515, 3, 65512, 65516, 3, 65512, 65517, 3, 65512, 65518, 3, 65512, 65519, 3, 65512, 65520, 3, 65512, 65521, 3, 65512, 65522, 3, 65512, 65523, 3, 65512, 65524, 3, 65512, 65525, 3, 65512, 65526, 3, 65512, 65527, 3, 65512, 65528, 3, 65512, 65529, 3, 65512, 65530, 3, 65512, 65531, 3, 65512, 65532, 3, 65512, 65533, 3, 65512, 65534, 3, 65512, 65535, 3, 65512, 0, 3, 65512, 1, 3, 65512, 2, 3, 65512, 3, 3, 65512, 4, 3, 65512, 5, 3, 65512, 6, 3, 65512, 7, 3, 65512, 8, 3, 65512, 9, 3, 65512, 10, 3, 65512, 11, 3, 65512, 12, 3, 65512, 13, 3, 65512, 14, 3, 65512, 15, 3, 65512, 16, 3, 65512, 17, 3, 65512, 18, 3, 65512, 19, 3, 65512, 20, 3, 65512, 21, 3, 65512, 22, 3, 65512, 23, 3, 65512, 24, 3, 24, 65512, 3, 24, 65513, 3, 24, 65514, 3, 24, 65515, 3, 24, 65516, 3, 24, 65517, 3, 24, 65518, 3, 24, 65519, 3, 24, 65520, 3, 24, 65521, 3, 24, 65522, 3, 24, 65523, 3, 24, 65524, 3, 24, 65525, 3, 24, 65526, 3, 24, 65527, 3, 24, 65528, 3, 24, 65529, 3, 24, 65530, 3, 24, 65531, 3, 24, 65532, 3, 24, 65533, 3, 24, 65534, 3, 24, 65535, 3, 24, 0, 3, 24, 1, 3, 24, 2, 3, 24, 3, 3, 24, 4, 3, 24, 5, 3, 24, 6, 3, 24, 7, 3, 24, 8, 3, 24, 9, 3, 24, 10, 3, 24, 11, 3, 24, 12, 3, 24, 13, 3, 24, 14, 3, 24, 15, 3, 24, 16, 3, 24, 17, 3, 24, 18, 3, 24, 19, 3, 24, 20, 3, 24, 21, 3, 24, 22, 3, 24, 23, 3, 24, 24, 3, 65512, 8, 1, 65513, 8, 1, 65514, 8, 1, 65515, 8, 1, 65516, 8, 1, 65517, 8, 1, 65518, 8, 1, 65519, 8, 1, 65520, 8, 1, 65521, 8, 1, 65522, 8, 1, 65523, 8, 1, 65524, 8, 1, 65525, 8, 1, 65526, 8, 1, 65527, 8, 1, 65528, 8, 1, 65529, 8, 1, 65530, 8, 1, 65531, 8, 1, 65532, 8, 1, 65533, 8, 1, 3, 8, 1, 4, 8, 1, 5, 8, 1, 6, 8, 1, 7, 8, 1, 8, 8, 1, 16, 8, 0, 17, 8, 0, 18, 8, 0, 19, 8, 0, 20, 8, 0, 21, 8, 0, 22, 8, 0, 23, 8, 0, 24, 8, 0, 8, 8, 0, 8, 9, 0, 8, 10, 0, 8, 11, 0, 8, 12, 0, 8, 13, 0, 8, 19, 0, 8, 20, 0, 8, 21, 0, 8, 22, 0, 8, 23, 0, 8, 24, 0, 65512, 65528, 5, 65513, 65528, 5, 65514, 65528, 5, 65515, 65528, 5, 65516, 65528, 5, 65517, 65528, 5, 65518, 65528, 5, 65519, 65528, 5, 65520, 65528, 5, 65521, 65528, 5, 65522, 65528, 5, 65523, 65528, 5, 65524, 65528, 5, 65525, 65528, 5, 65526, 65528, 5, 65527, 65528, 5, 65528, 65528, 5, 65529, 65528, 5, 65530, 65528, 5, 65531, 65528, 5, 65532, 65528, 5, 65533, 65528, 5, 3, 65528, 4, 4, 65528, 4, 5, 65528, 4, 6, 65528, 4, 7, 65528, 4, 8, 65528, 4, 9, 65528, 4, 10, 65528, 4, 11, 65528, 4, 12, 65528, 4, 13, 65528, 4, 14, 65528, 4, 15, 65528, 4, 16, 65528, 4, 17, 65528, 4, 18, 65528, 4, 19, 65528, 4, 20, 65528, 4, 21, 65528, 4, 22, 65528, 4, 23, 65528, 4, 24, 65528, 4, 65528, 65512, 5, 65528, 65513, 5, 65528, 65514, 5, 65528, 65515, 5, 65528, 65516, 5, 65528, 65517, 5, 65528, 65518, 5, 65528, 65519, 5, 65528, 65520, 5, 65528, 65526, 5, 65528, 65527, 5, 65528, 65528, 5, 8, 65512, 4, 8, 65513, 4, 8, 65514, 4, 8, 65515, 4, 8, 65516, 4, 8, 65517, 4, 8, 65518, 4, 8, 65519, 4, 8, 65520, 4, 8, 65526, 4, 8, 65527, 4, 8, 65528, 4, 65524, 14, 1, 65524, 15, 1, 65524, 16, 1, 65524, 17, 1, 65524, 18, 1, 65529, 0, 2, 65530, 0, 2, 65531, 0, 2, 65532, 0, 2, 16, 65516, 4, 16, 65517, 4, 16, 65518, 4)
+}
+
+[node name="CentralPillar1" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.5, 1)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(1.5, 3, 1.5)
+material = SubResource("PillarMat")
+
+[node name="CentralPillar2" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, -1)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(1, 2, 1)
+material = SubResource("PillarMat")
+
+[node name="SouthCover" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.5, 7)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(2.5, 1, 1)
+material = SubResource("PillarMat")
+
+[node name="KeyRoomCover" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.75, -6)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(1.5, 1.5, 1.5)
+material = SubResource("PillarMat")
+
+[node name="Lamps" type="Node3D" parent="."]
+
+[node name="SpawnLamp" type="Node3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
+
+[node name="Fixture" type="MeshInstance3D" parent="Lamps/SpawnLamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.95, 0)
+mesh = SubResource("LampMesh")
+
+[node name="Light" type="SpotLight3D" parent="Lamps/SpawnLamp"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 3.9, 0)
+light_color = Color(0.7, 0.6, 0.35, 1)
+light_energy = 6.0
+shadow_enabled = true
+spot_range = 8.0
+spot_angle = 50.0
+spot_attenuation = 1.2
+
+[node name="SouthHallLamp1" type="Node3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 8)
+
+[node name="Fixture" type="MeshInstance3D" parent="Lamps/SouthHallLamp1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.95, 0)
+mesh = SubResource("LampMesh")
+
+[node name="Light" type="SpotLight3D" parent="Lamps/SouthHallLamp1"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 3.9, 0)
+light_color = Color(0.4, 0.5, 0.7, 1)
+light_energy = 5.0
+shadow_enabled = true
+spot_range = 9.0
+spot_angle = 50.0
+spot_attenuation = 1.2
+
+[node name="SouthHallLamp2" type="Node3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 7)
+
+[node name="Fixture" type="MeshInstance3D" parent="Lamps/SouthHallLamp2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.95, 0)
+mesh = SubResource("LampMesh")
+
+[node name="Light" type="SpotLight3D" parent="Lamps/SouthHallLamp2"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 3.9, 0)
+light_color = Color(0.45, 0.5, 0.7, 1)
+light_energy = 5.0
+shadow_enabled = true
+spot_range = 8.0
+spot_angle = 50.0
+spot_attenuation = 1.2
+
+[node name="CentralLamp1" type="Node3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="Fixture" type="MeshInstance3D" parent="Lamps/CentralLamp1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.95, 0)
+mesh = SubResource("LampMesh")
+
+[node name="Light" type="SpotLight3D" parent="Lamps/CentralLamp1"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 3.9, 0)
+light_color = Color(0.5, 0.3, 0.6, 1)
+light_energy = 6.0
+shadow_enabled = true
+spot_range = 10.0
+spot_angle = 55.0
+spot_attenuation = 1.2
+
+[node name="CentralLamp2" type="Node3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2)
+
+[node name="Fixture" type="MeshInstance3D" parent="Lamps/CentralLamp2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.95, 0)
+mesh = SubResource("LampMesh")
+
+[node name="Light" type="SpotLight3D" parent="Lamps/CentralLamp2"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 3.9, 0)
+light_color = Color(0.45, 0.3, 0.55, 1)
+light_energy = 5.0
+shadow_enabled = true
+spot_range = 8.0
+spot_angle = 50.0
+spot_attenuation = 1.2
+
+[node name="NorthCorridorLamp" type="Node3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
+
+[node name="Fixture" type="MeshInstance3D" parent="Lamps/NorthCorridorLamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.95, 0)
+mesh = SubResource("LampMesh")
+
+[node name="Light" type="SpotLight3D" parent="Lamps/NorthCorridorLamp"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 3.9, 0)
+light_color = Color(0.5, 0.55, 0.7, 1)
+light_energy = 5.0
+shadow_enabled = true
+spot_range = 8.0
+spot_angle = 50.0
+spot_attenuation = 1.2
+
+[node name="KeyRoomLamp" type="Node3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -8)
+
+[node name="Fixture" type="MeshInstance3D" parent="Lamps/KeyRoomLamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.95, 0)
+mesh = SubResource("LampMesh")
+
+[node name="Light" type="SpotLight3D" parent="Lamps/KeyRoomLamp"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 3.9, 0)
+light_color = Color(0.2, 0.55, 0.3, 1)
+light_energy = 6.0
+shadow_enabled = true
+spot_range = 10.0
+spot_angle = 55.0
+spot_attenuation = 1.2
+
+[node name="ExitLamp" type="Node3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -8)
+
+[node name="Fixture" type="MeshInstance3D" parent="Lamps/ExitLamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.95, 0)
+mesh = SubResource("ExitLampMesh")
+
+[node name="Light" type="SpotLight3D" parent="Lamps/ExitLamp"]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 3.9, 0)
+light_color = Color(0.6, 0.15, 0.1, 1)
+light_energy = 6.0
+shadow_enabled = true
+spot_range = 10.0
+spot_angle = 55.0
+spot_attenuation = 1.2
+
+[node name="Enemies" type="Node3D" parent="."]
+
+[node name="Standard1" parent="Enemies" instance=ExtResource("3_enemy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 9)
+
+[node name="Standard2" parent="Enemies" instance=ExtResource("3_enemy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 3)
+
+[node name="Standard3" parent="Enemies" instance=ExtResource("3_enemy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -6)
+
+[node name="Runner1" parent="Enemies" instance=ExtResource("4_runner")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 6)
+
+[node name="Runner2" parent="Enemies" instance=ExtResource("4_runner")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -1)
+
+[node name="Runner3" parent="Enemies" instance=ExtResource("4_runner")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -7)
+
+[node name="Standard4" parent="Enemies" instance=ExtResource("3_enemy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -6)
+
+[node name="Brute1" parent="Enemies" instance=ExtResource("5_brute")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -9)
+los_memory_duration = 5.0
+
+[node name="Pickups" type="Node3D" parent="."]
+
+[node name="HealthPickup1" parent="Pickups" instance=ExtResource("6_health")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, 8)
+
+[node name="HealthPickup2" parent="Pickups" instance=ExtResource("6_health")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.5, -3)
+
+[node name="HealthPickup3" parent="Pickups" instance=ExtResource("6_health")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.5, -5)
+
+[node name="KeyPickup" parent="." instance=ExtResource("7_key")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.5, -8)
+
+[node name="Door" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, -6.5)
+collision_layer = 1
+collision_mask = 0
+
+[node name="DoorCollision" type="CollisionShape3D" parent="Door"]
+shape = SubResource("DoorShape")
+
+[node name="DoorMesh" type="CSGBox3D" parent="Door"]
+size = Vector3(0.5, 4, 2)
+material = SubResource("DoorMaterial")
+
+[node name="ExitTrigger" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, -8)
+collision_layer = 0
+collision_mask = 2
+
+[node name="ExitCollision" type="CollisionShape3D" parent="ExitTrigger"]
+shape = SubResource("ExitShape")
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8, 0, 8)

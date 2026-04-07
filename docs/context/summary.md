@@ -17,12 +17,13 @@ First-person shooter prototype built in Godot 4.6 with GDScript. A horror-themed
 
 ## Core Flow
 
-Player spawns in level (positioned at SpawnPoint Marker3D) → explores rooms and corridors using flashlight → fights placed enemies → finds key pickup → door slides open → reaches exit trigger → level emits `level_completed` → game shell advances to next level or shows final victory. Death at any point triggers game over. Restart reloads the entire game shell via `change_scene_to_file`.
+Player spawns in level (positioned at SpawnPoint Marker3D) → explores rooms and corridors using flashlight → fights placed enemies → finds key pickup → door slides open → reaches exit trigger → level emits `level_completed` → fade to black → game shell advances to next level → fade in. Completing final level shows victory. Death at any point triggers game over. Restart reloads entire game shell via `change_scene_to_file`.
 
 ## System State
 
 - Player: movement, mouse-look, jump, rate-limited hitscan shooting with muzzle flash, toggleable SpotLight3D flashlight (F key, off by default), damage overlay on hit, hit confirmation signal, healing via pickups, death
-- Labyrinth: GridMap-based multi-room level with ceiling, corridors, chokepoints, and obstacles; walls built from a MeshLibrary with dark zone-colored materials; enclosed with dark ceiling at Y=4; horror atmosphere with volumetric fog, SSAO, glow, desaturated color grading; 10 ceiling-mounted SpotLight3D lamps aimed downward with emissive fixture meshes (all shadow-casting); rooms include spawn room, south hall, two combat rooms, north hall, key room, NW corridor, and exit room; floor, pillars, and cover objects remain as CSG
+- Level 1 (Labyrinth): GridMap-based multi-room level (36x36); warm-to-cool zone lighting (amber, blood-red, cold blue, eerie green); 10 ceiling SpotLight3D lamps; 7 enemies (4 standard, 2 runners, 1 brute); 3 health pickups; rooms: spawn, south hall, combat rooms, north hall, key room, NW corridor, exit room
+- Level 2 (Cold Tunnels): GridMap-based winding layout (24x24); colder atmosphere with denser fog, deeper blue ambient, more desaturated; 8 ceiling SpotLight3D lamps with violet/cold blue/green/red tones; 8 enemies (4 standard, 3 runners, 1 brute); 3 health pickups; rooms: spawn alcove, south hall, central hub, north corridor, key room, exit room; deeper ambient drone
 - Enemies: 7 placed instances — 4 standard, 2 runners, 1 brute in key room; line-of-sight-gated direct-chase AI, telegraphed melee, hit stagger, tween death effect, 3D spatial sounds
 - HUD: color-coded health bar, crosshair with hitmarker, damage direction indicators, kills counter, key status, game over/victory panels
 - Health pickups: 3 placed in level; Area3D with duck-typed `heal()` on player contact
