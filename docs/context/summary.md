@@ -1,6 +1,6 @@
 ## What
 
-Multi-level horror FPS prototype built in Godot 4.6 with GDScript. Player navigates dark enclosed mazes with a flashlight, fights placed enemies, collects a key to unlock the exit, and progresses through levels. Three enemy variants (standard, runner, brute) with line-of-sight-aware direct-chase AI, procedurally generated sound effects, dark zone-colored level geometry, health/damage with visual feedback, ammo-limited hitscan weapon with ammo pickups, HUD with level indicator, ammo counter, key status, and kills tracking. Two handcrafted levels with fade-to-black transitions preserving player state across levels.
+Multi-level horror FPS prototype built in Godot 4.6 with GDScript. Player navigates dark enclosed mazes with a flashlight, fights placed enemies, collects a key to unlock the exit, and progresses through levels. Three enemy variants (standard, runner, brute) with line-of-sight-aware direct-chase AI, procedural SFX with per-level looping background music tracks, dark zone-colored level geometry, health/damage with visual feedback, ammo-limited hitscan weapon with ammo pickups, HUD with level indicator, ammo counter, key status, and kills tracking. Two handcrafted levels with fade-to-black transitions preserving player state across levels.
 
 ## Architecture
 
@@ -22,11 +22,11 @@ Game shell loads level 1 with fade-in from black. Player explores rooms using fl
 ## System State
 
 - Player: movement, mouse-look, jump, ammo-limited hitscan shooting (30 start / 60 max, 1 per shot, dry-fire click when empty), toggleable flashlight (F key, off by default), damage overlay, hit confirmation, healing, death
-- Level 1: 36x36 GridMap maze; warm-to-cool zone lighting; 10 lamps; 7 enemies (4 standard, 2 runners, 1 brute); 3 health pickups; 3 ammo pickups (10 each)
-- Level 2: 24x24 GridMap maze; colder atmosphere with denser fog, deeper ambient, more desaturated; 8 lamps; 8 enemies (4 standard, 3 runners, 1 brute); 3 health pickups; 3 ammo pickups (10 each); deeper ambient drone
+- Level 1: 36x36 GridMap maze; warm-to-cool zone lighting; 10 lamps; 7 enemies (4 standard, 2 runners, 1 brute); 3 health pickups; 3 ammo pickups (10 each); "Labyrinth Breathes" background music
+- Level 2: 24x24 GridMap maze; colder atmosphere with denser fog, more desaturated; 8 lamps; 8 enemies (4 standard, 3 runners, 1 brute); 3 health pickups; 3 ammo pickups (10 each); "Hostile Corridor" background music
 - HUD: health bar, ammo counter (AMMO: current / max), crosshair with hitmarker, damage direction indicators, kills counter, key status, level label, level announcement overlay, game over/victory panels with run stats
 - Run state persists across levels: health, ammo, flashlight, kills, elapsed time; 25HP heal on level transition
-- Level-local state resets per level: key, door, enemies, pickups, geometry, lighting, ambient audio
+- Level-local state resets per level: key, door, enemies, pickups, geometry, lighting, background music
 
 ## Capabilities
 
@@ -47,4 +47,5 @@ Game shell loads level 1 with fade-in from black. Player explores rooms using fl
 - GridMap with MeshLibrary for wall geometry; CSG for floor, ceiling, pillars, and cover objects
 - `gdformat` / `gdlint` for code formatting and linting
 - Design resolution 1280x720 with `canvas_items` stretch mode
-- No external assets or plugins
+- MP3 background music tracks per level (`assets/audio/`)
+- No plugins

@@ -28,7 +28,7 @@
 - `game.tscn` is the main scene; contains Player, HUD, `LevelContainer` Node3D slot, and `FadeLayer` (CanvasLayer layer=100 with full-screen `FadeRect` ColorRect)
 - `game.gd` owns run-global state: `_kills`, `_elapsed_time`, `_game_over`, `_transitioning`, `_current_level_index`
 - Player added to `&"player"` group in `game.gd._ready()` so enemies can find it
-- Player-HUD signal wiring (health_changed, hit_landed, damage_taken_from, died) done once in `game.gd._ready()`
+- Player-HUD signal wiring (health_changed, ammo_changed, hit_landed, damage_taken_from, died) done once in `game.gd._ready()`
 - `LEVELS` const array defines ordered level file paths
 - `_load_level(index)` frees previous level, instances next into `LevelContainer`, calls `_wire_level()`, resets key status, updates level label, positions player at SpawnPoint
 - `_wire_level()` connects enemy `died` signals, level `level_completed` signal, and calls `level.setup(player, hud)`
@@ -46,12 +46,12 @@ Each level scene must provide:
 - Root Node3D with script that has `signal level_completed` and `func setup(player, hud)`
 - `SpawnPoint` (Marker3D) for player positioning and facing
 - `Enemies` (Node3D) container; children with `died` signal get auto-wired by game shell
-- `Pickups` (Node3D) container for health pickups (self-contained, no wiring needed)
+- `Pickups` (Node3D) container for health and ammo pickups (self-contained, no wiring needed)
 - `KeyPickup` (Area3D) with `picked_up` signal
 - `Door` (StaticBody3D) on Environment layer
 - `ExitTrigger` (Area3D) with collision_mask=2 (Player)
 - `WorldEnvironment` with level-specific atmosphere settings
-- Level-local state: `_has_key`, `_completed`, ambient audio, key/door references
+- Level-local state: `_has_key`, `_completed`, background music, key/door references
 
 ## Damage and Healing Pattern
 
@@ -83,14 +83,13 @@ Each level scene must provide:
 - All scene instances that modify material properties call `_mesh.get_surface_override_material(0).duplicate()` in `_ready()`
 - Prevents shared SubResource materials from affecting all instances when flashing hit color
 
-## Procedural Audio
+## Audio
 
-- All game sounds are generated at runtime via `AudioStreamWAV` (no imported audio files)
-- Synthesized from sine waves + noise with envelope decay
-- Player uses `AudioStreamPlayer` (non-spatial) for shoot and hurt sounds
+- SFX (shoot, hurt, dry-fire, enemy alerts, pickup chimes, key chime, door rumble) are procedural: synthesized at runtime via `AudioStreamWAV` from sine waves + noise with envelope decay
+- Background music uses imported MP3 files (`assets/audio/`), loaded as `AudioStreamMP3` with `loop = true`; each level loads its own track in `_ready()`
+- Player uses `AudioStreamPlayer` (non-spatial) for shoot, hurt, and dry-fire sounds
 - Enemies use `AudioStreamPlayer3D` for spatially positioned hit and alert sounds
-- Level script owns progression sounds (key chime, door rumble) and ambient drone
-- Ambient drone uses `AudioStreamWAV.LOOP_FORWARD` with `loop_end` for seamless looping; pitch/harmonics vary per level
+- Level script owns progression sounds (key chime, door rumble) and background music playback
 - For sounds that must outlive their source node: create AudioStreamPlayer, reparent to persistent parent, connect `finished` to `queue_free`
 
 ## Enemy AI Pattern

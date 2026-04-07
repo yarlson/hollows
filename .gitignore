@@ -19,3 +19,4 @@ Thumbs.db
 
 # Memory vault (local only)
 .memory/
+/build/windows/FPS_Prototype.exe

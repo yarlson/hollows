@@ -19,8 +19,8 @@
 - **zone material** — StandardMaterial3D with distinct dark albedo color assigned to level geometry by area; dark palette for horror atmosphere
 - **flashlight** — SpotLight3D on the player's Camera3D; off by default, toggled with F key; primary visibility tool
 - **alert sound** — 3D spatial procedural growl played by an enemy on IDLE-CHASE transition
-- **ambient drone** — looping low-frequency procedural tone played by level script; pitch varies per level for distinct atmosphere
-- **procedural audio** — sound effects generated at runtime from synthesized waveforms via AudioStreamWAV; no external audio assets
+- **background music** — looping MP3 track loaded per level via `AudioStreamMP3`; each level has a distinct track in `assets/audio/`
+- **procedural audio** — sound effects generated at runtime from synthesized waveforms via `AudioStreamWAV`; used for all SFX (not background music)
 - **muzzle flash** — brief OmniLight3D pulse on the camera when the player fires
 - **damage overlay** — brief ColorRect flash over the screen when the player takes damage
 - **hitmarker** — brief white flash on the crosshair confirming a shot hit a damageable target
@@ -30,7 +30,9 @@
 - **attack telegraph** — configurable orange flash on an enemy before melee damage; driven by one-shot TelegraphTimer
 - **attack lunge** — brief forward velocity impulse applied to the enemy when its telegraph completes
 - **damage direction indicator** — semi-transparent red bar on HUD edge showing damage source direction relative to player facing
-- **health pickup** — green emissive Area3D sphere; persists until player contact; heals via duck-typed `heal()` method
+- **health pickup** — white box with red cross emissive Area3D; persists until player contact; heals via duck-typed `heal()` method
+- **ammo pickup** — olive crate with glowing yellow bullets emissive Area3D; persists until player contact; restores ammo via duck-typed `add_ammo()` method
+- **dry-fire** — quiet click sound played when player attempts to shoot with zero ammo; no shot is fired
 - **camera kick** — small upward pitch impulse per shot with smooth recovery; prevents permanent aim drift
 - **head bob** — sine-based vertical oscillation of the head node while player moves on ground
 - **placed enemy** — enemy instance positioned directly in the level scene at a fixed location, not dynamically spawned
