@@ -2,27 +2,27 @@
 
 [sub_resource type="StandardMaterial3D" id="mat_spawn"]
 roughness = 0.9
-albedo_color = Color(0.14, 0.13, 0.12, 1)
+albedo_color = Color(0.28, 0.26, 0.24, 1)
 
 [sub_resource type="StandardMaterial3D" id="mat_south_hall"]
 roughness = 0.9
-albedo_color = Color(0.12, 0.12, 0.16, 1)
+albedo_color = Color(0.22, 0.22, 0.28, 1)
 
 [sub_resource type="StandardMaterial3D" id="mat_combat"]
 roughness = 0.9
-albedo_color = Color(0.14, 0.11, 0.09, 1)
+albedo_color = Color(0.28, 0.22, 0.18, 1)
 
 [sub_resource type="StandardMaterial3D" id="mat_north"]
 roughness = 0.9
-albedo_color = Color(0.1, 0.1, 0.14, 1)
+albedo_color = Color(0.2, 0.2, 0.26, 1)
 
 [sub_resource type="StandardMaterial3D" id="mat_key_room"]
 roughness = 0.9
-albedo_color = Color(0.16, 0.12, 0.07, 1)
+albedo_color = Color(0.3, 0.24, 0.15, 1)
 
 [sub_resource type="StandardMaterial3D" id="mat_exit"]
 roughness = 0.9
-albedo_color = Color(0.09, 0.12, 0.1, 1)
+albedo_color = Color(0.18, 0.24, 0.2, 1)
 
 [sub_resource type="BoxMesh" id="mesh_0"]
 size = Vector3(0.5, 4.0, 0.5)
